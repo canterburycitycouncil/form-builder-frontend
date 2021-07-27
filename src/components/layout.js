@@ -26,7 +26,7 @@ const Layout = ({title, children}) => {
                 {routes.map(route => {
                     if(route.inMenu){
                         return (
-                            <NavLink to={route.path} key={route.path} onClick={sessionStorage.removeItem('currentForm')}>
+                            <NavLink to={route.path} key={route.path} onClick={e => sessionStorage.removeItem('currentForm')}>
                                 <ListItem button>
                                     <ListItemIcon><route.icon></route.icon></ListItemIcon>
                                     <ListItemText primary={route.menuName} color="primary"></ListItemText>
