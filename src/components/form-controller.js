@@ -310,7 +310,7 @@ const FormController = (props) => {
                                 </DialogContent>
                             ) : (
                                 <DialogContent className={classes.root}>
-                                    <FieldController onFormSubmit={handleModal} edit={true} onCancel={handleCancel} field={currentField !== null && currentPage !== null && form ? form.pages[currentPage].fields[currentField] : null} pageIndex={currentPage} fieldIndex={currentField} />
+                                    <FieldController onFormSubmit={handleModal} edit={true} onCancel={handleCancel} field={currentField !== null && currentPage !== null && form && form.pages && typeof form.pages !== 'string' ? form.pages[currentPage].fields[currentField] : null} pageIndex={currentPage} fieldIndex={currentField} />
                                 </DialogContent>
                             ))
                              : (<div></div>)}

@@ -144,8 +144,8 @@ const Forms = () => {
     }
 
     const handleDeleteForm = async (id) => {
-        history.push('/admin/forms');
         await API.graphql(graphqlOperation(deleteForm, {input: {id: id}}));
+        history.push('/admin/forms');
     }
 
     return (
