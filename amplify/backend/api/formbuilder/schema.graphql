@@ -1,0 +1,30 @@
+type Form @model @key(name:"byCategory", fields:["categoryID"]) {
+  id: ID!
+  name: String!
+  categoryID: ID!
+  category: Category @connection(fields: ["categoryID"])
+  pages: String!
+}
+
+type Category @model {
+  id: ID!
+  name: String!
+  parentID: ID
+}
+
+type Submission @model @key(name: "byForm", fields: ["formID"]) @key(name: "byUser", fields: ["formID"]) {
+  id: ID!
+  userID: ID
+  user: User @connection(fields: ["userID"])
+  formID: ID!
+  values: String!
+}
+
+type User @model {
+  id: ID!
+  email: String!
+  firstName: String
+  lastName: String
+  address: String!
+  contactNumber: String
+}
