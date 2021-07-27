@@ -1,15 +1,20 @@
-import { FormControl, TextField, Select, Typography, FormGroup, InputLabel, MenuItem, Button } from "@material-ui/core";
+import { FormControl, TextField, Select, Typography, FormGroup, InputLabel, MenuItem, Fab } from "@material-ui/core";
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import React from "react";
 
 const FieldDisplay = (props) => {
     let field;
     const handleEdit = () => {
-        if(props.id){
+        console.log(props.fieldIndex);
+        if(props.fieldIndex || props.fieldIndex === 0){
             props.onEditClicked(props.fieldIndex)
         }
     }
     const handleDelete = () => {
-        props.onDeleteClicked(props.fieldIndex);
+        if(props.fieldIndex || props.fieldIndex === 0){
+            props.onDeleteClicked(props.fieldIndex);
+        }
     }
     if(props.field && props.field.type){
         switch(props.field.type){
@@ -19,14 +24,26 @@ const FieldDisplay = (props) => {
                         {props.field.required ? (
                             <React.Fragment>
                                 <TextField required />
-                                <Button variant="contained" onClick={e => handleEdit}>Edit</Button>
-                                <Button variant="contained" onClick={e => handleDelete}>Delete</Button>
+                                <div className="fieldActionsContainer">
+                                    <Fab size="small" onClick={e => handleEdit()}>
+                                        <EditIcon size="small"></EditIcon>
+                                    </Fab>
+                                    <Fab size="small" onClick={e => handleDelete()}>
+                                        <DeleteIcon size="small"></DeleteIcon>
+                                    </Fab>
+                                </div>
                             </React.Fragment>
                         ) : (
                             <React.Fragment>
                                 <TextField />
-                                <Button variant="contained" onClick={e => handleEdit}>Edit</Button>
-                                <Button variant="contained" onClick={e => handleDelete}>Delete</Button>
+                                <div className="fieldActionsContainer">
+                                    <Fab size="small" onClick={e => handleEdit()}>
+                                        <EditIcon size="small"></EditIcon>
+                                    </Fab>
+                                    <Fab size="small" onClick={e => handleDelete()}>
+                                        <DeleteIcon size="small"></DeleteIcon>
+                                    </Fab>
+                                </div>
                             </React.Fragment>
                         )}
                     </FormControl>
@@ -50,8 +67,14 @@ const FieldDisplay = (props) => {
                                                 <MenuItem key={value.key} value={value.key}>{value.value}</MenuItem>
                                             )) : ''}
                                         </Select>
-                                        <Button variant="contained" onClick={e => handleEdit}>Edit</Button>
-                                        <Button variant="contained" onClick={e => handleDelete}>Delete</Button>
+                                        <div className="fieldActionsContainer">
+                                            <Fab size="small" onClick={e => handleEdit()}>
+                                                <EditIcon size="small"></EditIcon>
+                                            </Fab>
+                                            <Fab size="small" onClick={e => handleDelete()}>
+                                                <DeleteIcon size="small"></DeleteIcon>
+                                            </Fab>
+                                        </div>
                                     </FormControl>
                                 </FormGroup>
                             ) : (
@@ -68,8 +91,14 @@ const FieldDisplay = (props) => {
                                                 <MenuItem key={value.key} value={value.key}>{value.value}</MenuItem>
                                             )) : ''}
                                         </Select>
-                                        <Button variant="contained" onClick={e => handleEdit}>Edit</Button>
-                                        <Button variant="contained" onClick={e => handleDelete}>Delete</Button>
+                                        <div className="fieldActionsContainer">
+                                            <Fab size="small" onClick={e => handleEdit()}>
+                                                <EditIcon size="small"></EditIcon>
+                                            </Fab>
+                                            <Fab size="small" onClick={e => handleDelete()}>
+                                                <DeleteIcon size="small"></DeleteIcon>
+                                            </Fab>
+                                        </div>
                                     </FormControl>
                                 </FormGroup>
                             )}
@@ -82,26 +111,41 @@ const FieldDisplay = (props) => {
                         {props.field.required ? (
                             <React.Fragment>
                                 <TextField rowsMax={4} rows={3} fullWidth={true} multiline={true} required />
-                                <Button variant="contained" onClick={e => handleEdit}>Edit</Button>
-                                <Button variant="contained" onClick={e => handleDelete}>Delete</Button>
+                                <div className="fieldActionsContainer">
+                                    <Fab size="small" onClick={e => handleEdit()}>
+                                        <EditIcon size="small"></EditIcon>
+                                    </Fab>
+                                    <Fab size="small" onClick={e => handleDelete()}>
+                                        <DeleteIcon size="small"></DeleteIcon>
+                                    </Fab>
+                                </div>
                             </React.Fragment>
                         ) : (
                             <React.Fragment>
                                 <TextField rowsMax={4} rows={3} fullWidth={true} multiline={true} required />
-                                <Button variant="contained" onClick={e => handleEdit}>Edit</Button>
-                                <Button variant="contained" onClick={e => handleDelete}>Delete</Button>
+                                <div className="fieldActionsContainer">
+                                    <Fab size="small" onClick={e => handleEdit()}>
+                                        <EditIcon size="small"></EditIcon>
+                                    </Fab>
+                                    <Fab size="small" onClick={e => handleDelete()}>
+                                        <DeleteIcon size="small"></DeleteIcon>
+                                    </Fab>
+                                </div>
                             </React.Fragment>
                         )}
                     </FormControl>
                 );
             break;
-            
+            default:
+                return (
+                    <div></div>
+                )
         }
     }
     return (
         <React.Fragment>
             {props.field && props.field.label ? (
-                <Typography variant="h3">{props.field.label}</Typography>
+                <Typography variant="h3" className="fieldDisplayLabel">{props.field.label}</Typography>
             ) : ''}
             {field ? field : ''}
         </React.Fragment>

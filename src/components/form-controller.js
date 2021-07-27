@@ -10,18 +10,12 @@ import Add from "@material-ui/icons/Add";
 import { useHistory } from 'react-router-dom';
 import { Dialog } from "@material-ui/core";
 import { DialogTitle } from "@material-ui/core";
+import { DialogContent } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
-    paper: {
-      position: 'absolute',
-      width: 400,
-      backgroundColor: theme.palette.background.paper,
-      border: '2px solid #000',
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-      top: `40%`,
-      left: `calc(50% - 200px)%`,
-    },
+const useStyles = makeStyles(() => ({
+    root: {
+        height: '100%'
+    }
 }));
 
 const FormController = (props) => {
@@ -33,35 +27,41 @@ const FormController = (props) => {
     const [deleteType, setDeleteType] = useState(null);
     const [mode, setMode] = useState(null);
     const history = useHistory();
-
-    console.log(props.id);
-    console.log(JSON.parse(sessionStorage.getItem('currentForm')));
-
+    const classes = useStyles();
 
     useEffect(() => {
-        if(sessionStorage.getItem('currentForm') && !form){
-            setForm(JSON.parse(sessionStorage.getItem('currentForm')));
-            setCurrentPage(0);
-        }else if(props.id && !form){
-            setForm(props.forms[props.id]);
-            sessionStorage.setItem('currentForm', JSON.stringify(form));
-            setCurrentPage(0);
-        }else if(props.id === 0 && !form){
-            setForm({
-                name: 'New form',
-                pages: [
-                    {
-                        name: 'Page 1',
-                        fields: []
-                    }
-                ]
-            });
-            sessionStorage.setItem('currentForm', JSON.stringify(form));
-            setCurrentPage(0);
-        }else{
-            console.log('form cannot be found');
+        if(!form){
+            if(sessionStorage.getItem('currentForm')){
+                setForm(JSON.parse(sessionStorage.getItem('currentForm')));
+                setCurrentPage(0);
+            }else if(props.id){
+                let newForm = props.forms.find(form => form.id === props.id);
+                newForm.pages = JSON.parse(newForm.pages);
+                sessionStorage.setItem('currentForm', JSON.stringify(newForm));
+                setForm(newForm);
+                setCurrentPage(0);
+            }else if(props.isNewForm){
+                let newForm = {
+                    name: 'New form',
+                    categoryID: '1',
+                    pages: [
+                        {
+                            name: 'Page 1',
+                            fields: []
+                        }
+                    ]
+                };
+                sessionStorage.setItem('currentForm', JSON.stringify(newForm));
+                setForm(newForm);
+                setCurrentPage(0);
+            }else{
+                console.log('form cannot be found');
+            }
+        }else if(form && typeof form.pages === 'string'){
+            let formsCopy = {...form};
+            formsCopy.pages = JSON.parse(formsCopy.pages);
         }
-    }, [props.id, form]);
+    }, [props.id, form, props.forms, props.isNewForm]);
 
     const addPage = () => {
         let formCopy = {...form};
@@ -110,9 +110,9 @@ const FormController = (props) => {
             case 'form':
                 sessionStorage.removeItem('currentForm');
                 if(props.edit && props.id){
-                    history.push(`/forms/${props.id}`);
+                    history.push(`/admin/forms/${props.id}`);
                 }else{
-                    history.push('/forms')
+                    history.push('/admin/forms')
                 }
             break;
             default:
@@ -130,18 +130,19 @@ const FormController = (props) => {
     }
 
     const handleEdit = () => {
-        history.push(`/forms/${props.id}/edit`);
+        history.push(`/admin/forms/${props.id}/edit`);
     }
 
     const handleDelete = (pageIndex, fieldIndex) => {
         let formCopy = {...form};
         switch(deleteType){
             case 'field':
-                delete formCopy.pages[pageIndex].fields[fieldIndex];
+                formCopy.pages[pageIndex].fields.splice(fieldIndex,1);
+                setDialogOpen(false);
+                setDeleteType(null);
                 setCurrentField(null);
                 setForm(formCopy);
                 sessionStorage.setItem('currentForm', JSON.stringify(formCopy));
-                setDialogOpen(false);
             break;
             case 'page':
                 if(formCopy.pages.length > 1){
@@ -185,11 +186,26 @@ const FormController = (props) => {
         setDialogOpen(true);
     }
 
-    console.log(form);
+    const handleDeletePage = () => {
+        setDeleteType('page');
+        setDialogOpen(true);
+    }
+
+    const handleChange = (event) => {
+        if((currentPage || currentPage === 0) && event.target.name === `page-${currentPage}-title`){
+            let formCopy = {...form};
+            formCopy.pages[currentPage].name = event.target.value;
+            setForm(formCopy);
+        }else if(event.target.name === 'form-name'){
+            let formCopy = {...form};
+            formCopy.name = event.target.value;
+            setForm(formCopy);
+        }
+    }
 
     return (
         <React.Fragment>
-            {props.edit && props.id ? (
+            {(props.edit && props.id) || props.isNewForm ? (
                 <div className="formControlButtonsContainer">
                     <Button variant="contained" onClick={e => handleCancel('form')}>Cancel</Button>
                     <Button variant="contained" onClick={e => handleSave()}>Save</Button>
@@ -207,26 +223,23 @@ const FormController = (props) => {
                 <React.Fragment>
                     {props.edit ? (
                         <form className="editForm" noValidate autoComplete="off">
-                            <TextField className="titleTextField" id="name" label="Name" defaultValue={form.name} />
+                            <TextField className="titleTextField" onChange={handleChange} id="name" name="form-name" label="Name" value={form.name} />
                             <List component="nav">
                                 <ListItem button onClick={e => addPage()}>
                                     <ListItemIcon><Add></Add></ListItemIcon>
                                     <ListItemText primary="Add page" />                                
                                 </ListItem>
                             </List>
-                            {form.pages && form.pages.length > 0 ? form.pages.map((page, pageIndex) => {
+                            {form.pages && form.pages.length > 0 && typeof form.pages !== 'string' ? form.pages.map((page, pageIndex) => {
                                 if(currentPage === pageIndex){
                                     return (
                                         <Paper key={`page-${pageIndex}`} className="pageCard">
                                             {form.pages.length > 1 ? (
                                                 <div className="pageDeleteButtonContainer">
-                                                    <Button variant="contained" onClick={e => {
-                                                        setDeleteType('page');
-                                                        setDialogOpen(true);
-                                                    }}>Delete page</Button>
+                                                    <Button variant="contained" onClick={e => handleDeletePage()}>Delete page</Button>
                                                 </div>
                                             ) : ''}
-                                            <TextField id={`Page${pageIndex}_name`} label="Page name" value={page.name} />
+                                            <TextField id={`Page${pageIndex}_name`} onChange={handleChange} label="Page name" name={`page-${pageIndex}-title`} value={page.name} />
                                             {page.fields && page.fields.length > 0 ? page.fields.map((field, index) => (
                                                 <React.Fragment key={`field-${index}`}>
                                                     {index === 0 ? (
@@ -264,7 +277,7 @@ const FormController = (props) => {
                     ) : (
                         <Typography variant="h2">{form.name}</Typography>
                     )}
-                    {form.pages.length > 1 ? (
+                    {form.pages && typeof form.pages !== 'string' && form.pages.length > 1 ? (
                         <Grid container>
                             <Grid item xs={6}>
                                 {currentPage -1 > -1 ? (
@@ -292,35 +305,45 @@ const FormController = (props) => {
                         >
                         {currentField !== null ?
                             (mode && mode === 'add' ? (
-                                <FieldController onFormSubmit={handleModal} onCancel={handleCancel} field={{label: null, type: null, required: false}} pageIndex={currentPage} fieldIndex={currentField} />
+                                <DialogContent className={classes.root}>
+                                    <FieldController onFormSubmit={handleModal} onCancel={handleCancel} field={{label: null, type: null, required: false}} pageIndex={currentPage} fieldIndex={currentField} />
+                                </DialogContent>
                             ) : (
-                                <FieldController onFormSubmit={handleModal} onCancel={handleCancel} field={currentField !== null && currentPage !== null && form ? form.pages[currentPage].fields[currentField] : null} pageIndex={currentPage} fieldIndex={currentField} />
+                                <DialogContent className={classes.root}>
+                                    <FieldController onFormSubmit={handleModal} edit={true} onCancel={handleCancel} field={currentField !== null && currentPage !== null && form ? form.pages[currentPage].fields[currentField] : null} pageIndex={currentPage} fieldIndex={currentField} />
+                                </DialogContent>
                             ))
-                             : ''}
+                             : (<div></div>)}
                     </Modal>
                     <Dialog
                         open={dialogOpen}
                         onClose={e => setDialogOpen(false)}
                         >
                             {getDeleteTitle()}
-                            {deleteType === 'field' ? (
-                                <React.Fragment>
-                                    <Typography>Are you sure you want to delete the field "{form.pages[currentPage].fields[currentField].label}"?</Typography> 
-                                    <Button onClick={e => handleDelete(currentPage, currentField)}>Confirm</Button>
-                                    <Button onClick={e => handleCancel('dialog')}>Cancel</Button>
-                                </React.Fragment>
-                            ) : (deleteType === 'page' ? (
-                                <React.Fragment>
+                            {deleteType === 'field' && currentField ? (
+                                <DialogContent>
+                                    <Typography>Are you sure you want to delete the field "{form.pages[currentPage].fields[currentField].label}"?</Typography>
+                                    <div className="dialogActionsContainer">
+                                        <Button onClick={e => handleDelete(currentPage, currentField)}>Confirm</Button>
+                                        <Button onClick={e => handleCancel('dialog')}>Cancel</Button>
+                                    </div>
+                                </DialogContent>
+                            ) : (deleteType === 'page' && currentPage ? (
+                                <DialogContent>
                                     <Typography>Are you sure you want to delete the page "{form.pages[currentPage].name}"?</Typography> 
-                                    <Button onClick={e => handleDelete(currentPage, currentField)}>Confirm</Button>
-                                    <Button onClick={e => handleCancel('dialog')}>Cancel</Button>
-                                </React.Fragment>
+                                    <div className="dialogActionsContainer">
+                                        <Button onClick={e => handleDelete(currentPage, currentField)}>Confirm</Button>
+                                        <Button onClick={e => handleCancel('dialog')}>Cancel</Button>
+                                    </div>
+                                </DialogContent>
                             ) : (
-                                <React.Fragment>
+                                <DialogContent>
                                     <Typography>Are you sure you want to delete the form "{form.name}"?</Typography> 
-                                    <Button onClick={e => handleDelete(currentPage, currentField)}>Confirm</Button>
-                                    <Button onClick={e => handleCancel('dialog')}>Cancel</Button>
-                                </React.Fragment>
+                                        <div className="dialogActionsContainer">
+                                        <Button onClick={e => handleDelete(currentPage, currentField)}>Confirm</Button>
+                                        <Button onClick={e => handleCancel('dialog')}>Cancel</Button>
+                                    </div>
+                                </DialogContent>
                             ))}
                         </Dialog>
                 </React.Fragment>

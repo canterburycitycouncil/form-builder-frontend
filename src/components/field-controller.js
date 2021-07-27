@@ -11,7 +11,7 @@ const useStyles = makeStyles({
     }
 });
 
-const FieldController = (props) => {
+const FieldController = React.forwardRef((props, ref) => {
     const [field, setField] = useState(props.field ? props.field : null);
     const classes=useStyles();
     const handleChange = (event) => {
@@ -61,8 +61,12 @@ const FieldController = (props) => {
     const exitModal = event => {
         props.onFormSubmit(false);
     }
+
+    const stopEventPropagation = e => {
+        e.stopPropagation();
+    } 
     return (
-        <Grid container className="modalCardContainer">
+        <Grid container className="modalCardContainer" ref={ref}>
             <Grid item xs={3}></Grid>
             <Grid item xs={6}>
                 <Paper className="modalCard">
@@ -81,7 +85,7 @@ const FieldController = (props) => {
                                 id="type"
                                 name="type"
                                 value={field.type ? field.type : ''}
-                                onClick={e => e.stopPropagation()}
+                                onClick={e => stopEventPropagation(e)}
                                 onChange={handleChange}
                                 >
                                     <MenuItem value={'textfield'}>Textfield</MenuItem>
@@ -111,14 +115,14 @@ const FieldController = (props) => {
                         <FormControl fullWidth={true}>
                             <FormControlLabel classes={classes} label="Required" labelPlacement="start" control={<Checkbox checked={field.required} color="primary" onChange={handleChecked} name="required" id="required" />} />
                         </FormControl>
-                        <Button type="submit" variant="contained" color="primary">Add field</Button>
-                        <Button variant="contained"   onClick={e => handleCancel()}>Cancel</Button>                 
+                        <Button type="submit" variant="contained" color="primary">{props.edit ? 'Add field' : 'Save'}</Button>
+                        <Button variant="contained" onClick={e => handleCancel(e)}>Cancel</Button>                 
                     </form>
                 </Paper>
             </Grid>
             <Grid item xs={3}></Grid>
         </Grid>
     )
-}
+})
 
 export default FieldController
