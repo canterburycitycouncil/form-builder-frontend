@@ -6,20 +6,19 @@ import {
 import routes from './routes';
 
 const App = () => {
-
     return (
         <React.Fragment>
             <Switch>
               {routes.map(route =>{
                 if(route.exact){
                   return (
-                    <Route path={route.path} exact key="route.path">
+                    <Route path={route.path} exact key={route.path}>
                       <route.component></route.component>
                     </Route>
                   );
                 }else{
                   return (
-                    <Route path={route.path} key="route.path">
+                    <Route path={route.path} key={route.path}>
                       <route.component></route.component>
                     </Route>
                   )
