@@ -1,5 +1,6 @@
 import Home from './pages/home';
 import Forms from './pages/forms';
+import Form from './pages/form';
 import HomeIcon from '@material-ui/icons/Home';
 import ListIcon from '@material-ui/icons/List';
 
@@ -7,20 +8,29 @@ import ListIcon from '@material-ui/icons/List';
 const routes = [
     {
         inMeu: false,
-        pasth: '/forms/add',
-        component: Forms
+        path: '/admin/forms/add',
+        component: Forms,
+        adminRoute: true
+    },
+    {
+        inMenu: false,
+        path: '/admin/forms/:id',
+        component: Forms,
+        adminRoute: true
+    },
+    {
+        inMenu: true,
+        path: '/admin/forms',
+        component: Forms,
+        menuName: 'Forms',
+        icon: ListIcon,
+        adminRoute: true
     },
     {
         inMenu: false,
         path: '/forms/:id',
-        component: Forms,
-    },
-    {
-        inMenu: true,
-        path: '/forms',
-        component: Forms,
-        menuName: 'Forms',
-        icon: ListIcon
+        component: Form,
+        adminRoute: false
     },
     {
         inMenu: true,
@@ -28,7 +38,8 @@ const routes = [
         component: Home,
         menuName: 'Home',
         icon: HomeIcon,
-        exact: true
+        exact: true,
+        adminRoute: true
     }
 ]
 
