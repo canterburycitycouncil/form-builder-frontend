@@ -129,6 +129,9 @@ export const createSubmission = /* GraphQL */ `
       }
       formID
       values
+      status
+      startDate
+      submissionDate
       createdAt
       updatedAt
     }
@@ -154,6 +157,9 @@ export const updateSubmission = /* GraphQL */ `
       }
       formID
       values
+      status
+      startDate
+      submissionDate
       createdAt
       updatedAt
     }
@@ -179,6 +185,9 @@ export const deleteSubmission = /* GraphQL */ `
       }
       formID
       values
+      status
+      startDate
+      submissionDate
       createdAt
       updatedAt
     }

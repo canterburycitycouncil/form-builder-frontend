@@ -275,7 +275,23 @@ const FormController = (props) => {
                             ) : ''}
                         </form>
                     ) : (
-                        <Typography variant="h2">{form.name}</Typography>
+                        <form className="editForm" noValidate autoComplete="off">
+                            <Typography variant="h2">{form.name}</Typography>
+                            {form.pages && form.pages.length > 0 && typeof form.pages !== 'string' ? form.pages.map((page, pageIndex) => {
+                                if(currentPage === pageIndex){
+                                    return (
+                                        <Paper key={`page-${pageIndex}`} className="pageCard">
+                                            <Typography variant="h3">{page.name}</Typography>
+                                            {page.fields && page.fields.length > 0 ? page.fields.map((field, index) => (
+                                                    <FieldDisplay field={field} pageIndex={pageIndex} fieldIndex={index} onEditClicked={handleEditField} onDeleteClicked={handleDeleteField} />
+                                            )): ''}
+                                        </Paper>
+                                    )
+                                }
+                                return '';
+                            }
+                            ) : ''}
+                        </form>
                     )}
                     {form.pages && typeof form.pages !== 'string' && form.pages.length > 1 ? (
                         <Grid container>
@@ -306,7 +322,7 @@ const FormController = (props) => {
                         {currentField !== null ?
                             (mode && mode === 'add' ? (
                                 <DialogContent className={classes.root}>
-                                    <FieldController onFormSubmit={handleModal} onCancel={handleCancel} field={{label: null, type: null, required: false}} pageIndex={currentPage} fieldIndex={currentField} />
+                                    <FieldController onFormSubmit={handleModal} onCancel={handleCancel} field={{id: null, label: null, type: null, required: false}} pageIndex={currentPage} fieldIndex={currentField} />
                                 </DialogContent>
                             ) : (
                                 <DialogContent className={classes.root}>

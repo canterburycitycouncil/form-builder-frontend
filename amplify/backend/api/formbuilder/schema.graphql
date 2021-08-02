@@ -15,9 +15,12 @@ type Category @model {
 type Submission @model @key(name: "byForm", fields: ["formID"]) @key(name: "byUser", fields: ["formID"]) {
   id: ID!
   userID: ID
-  user: User @connection(fields: ["userID"])
+  user: User
   formID: ID!
   values: String!
+  status: String!
+  startDate: String!
+  submissionDate: String
 }
 
 type User @model {

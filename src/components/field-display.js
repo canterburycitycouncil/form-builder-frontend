@@ -6,7 +6,6 @@ import React from "react";
 const FieldDisplay = (props) => {
     let field;
     const handleEdit = () => {
-        console.log(props.fieldIndex);
         if(props.fieldIndex || props.fieldIndex === 0){
             props.onEditClicked(props.fieldIndex)
         }

@@ -1,0 +1,361 @@
+@import 'variables';
+@import 'mixins';
+
+.siteHeader{
+    background-color: $purple;
+    color: #fff;
+    font-weight: 600;
+    margin-top: 0;
+    padding: 0.5rem 0;
+    text-align: center;
+    &:after{
+        display: block;
+        content: "";
+        clear: both;
+    }
+    &ButtonsContainer {
+        display: flex;
+        justify-content: flex-end;
+    }
+    .bookmarkButton {
+        align-items: center;
+        border: 2px solid;
+        background-color: transparent;
+        border-color: #FFFFFF;
+        border-radius: .375em;
+        color: #FFFFFF;
+        display: inline-flex;
+        margin-right: .5rem;
+        padding: .75rem;
+
+        &:hover {
+            background-color: #631361;
+            transition: .3s background-color, .3s color;
+        }
+
+        &Inner {
+            background-image: url('data:image/svg+xml;charset%3DUS-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2270%22%20height%3D%2270%22%20viewBox%3D%220%200%2070%2070%22%20preserveAspectRatio%3D%22xMinYMid%22%20aria-hidden%3D%22true%22%20focusable%3D%22false%22%3E%3Cpath%20d%3D%22M47.43%2C6H28.57A10.16%2C10.16%2C0%2C0%2C0%2C18.43%2C16.15V62.1a1.9%2C1.9%2C0%2C0%2C0%2C3.25%2C1.34L32.11%2C53%2C42.55%2C63.44a2%2C2%2C0%2C0%2C0%2C2.07.41%2C1.89%2C1.89%2C0%2C0%2C0%2C1.18-1.76V23.94h9.88a1.9%2C1.9%2C0%2C0%2C0%2C1.9-1.9h0V16.15A10.16%2C10.16%2C0%2C0%2C0%2C47.43%2C6ZM42%2C17.33V57.51L33.45%2C49a1.89%2C1.89%2C0%2C0%2C0-1.34-.56h0a1.88%2C1.88%2C0%2C0%2C0-1.34.56l-8.54%2C8.54V16.15A6.35%2C6.35%2C0%2C0%2C1%2C28.57%2C9.8H47.43a6.35%2C6.35%2C0%2C0%2C1%2C6.35%2C6.35v4h-8V17.33a2.81%2C2.81%2C0%2C0%2C1%2C2.81-2.81h.01a1.9%2C1.9%2C0%2C1%2C0%2C0-3.8A6.62%2C6.62%2C0%2C0%2C0%2C42%2C17.33Z%22%20fill%3D%22%23ffffff%22%2F%3E%3C%2Fsvg%3E'); 
+            background-repeat: no-repeat;
+            margin-right: .5rem;
+        }
+    }
+    .signInButton {
+        align-items: center;
+        border: 2px solid;
+        background-color: transparent;
+        border-color: #FFFFFF;
+        border-radius: .375em;
+        color: #FFFFFF;
+        display: inline-flex;
+        margin-right: .5rem;
+        padding: .5rem;
+
+        &:hover {
+            background-color: #631361;
+            transition: .3s background-color, .3s color;
+        }
+        
+        &Inner {
+            background-image: url('data:image/svg+xml;charset%3DUS-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2270%22%20height%3D%2270%22%20viewBox%3D%220%200%2070%2070%22%20preserveAspectRatio%3D%22xMinYMid%22%20aria-hidden%3D%22true%22%20focusable%3D%22false%22%3E%3Cpath%20d%3D%22M55.5%2C46.88l-12-4.29V37.42a18.71%2C18.71%2C0%2C0%2C0%2C6.61-14.66C50.11%2C13%2C43.33%2C5%2C35%2C5S19.89%2C13%2C19.89%2C22.76A18.7%2C18.7%2C0%2C0%2C0%2C26.5%2C37.42v5.17l-12%2C4.29A9.84%2C9.84%2C0%2C0%2C0%2C8%2C56.12v5A1.89%2C1.89%2C0%2C0%2C0%2C9.87%2C63H60.13A1.89%2C1.89%2C0%2C0%2C0%2C62%2C61.12v-5A9.84%2C9.84%2C0%2C0%2C0%2C55.5%2C46.88ZM38.66%2C15.4a1.9%2C1.9%2C0%2C0%2C0-1.67-1%2C1.88%2C1.88%2C0%2C0%2C0-1.64%2C1c-1.12%2C2.14-5.07%2C4.09-8.29%2C4.09a8.86%2C8.86%2C0%2C0%2C1-3-.49C25.41%2C13.05%2C29.91%2C8.77%2C35%2C8.77c5.26%2C0%2C9.89%2C4.62%2C11%2C10.9C42.78%2C20.15%2C40.68%2C18.92%2C38.66%2C15.4Zm-11.6%2C7.92a15.21%2C15.21%2C0%2C0%2C0%2C9.82-3.81%2C9.59%2C9.59%2C0%2C0%2C0%2C9.44%2C3.93C46%2C30.83%2C41.07%2C36.74%2C35%2C36.74s-11.28-6.2-11.34-13.86A13%2C13%2C0%2C0%2C0%2C27.06%2C23.32ZM29%2C45.7a1.89%2C1.89%2C0%2C0%2C0%2C1.25-1.78v-4.3a13%2C13%2C0%2C0%2C0%2C9.46%2C0v4.3A1.88%2C1.88%2C0%2C0%2C0%2C41%2C45.69l13.25%2C4.73a6.07%2C6.07%2C0%2C0%2C1%2C4%2C5.7v3.11H11.75V56.12a6.07%2C6.07%2C0%2C0%2C1%2C4-5.7Z%22%20fill%3D%22%23ffffff%22%2F%3E%3C%2Fsvg%3E'); 
+            background-repeat: no-repeat;
+            margin-right: 0;
+        }
+    }
+    &Icon {
+        background-position: center;
+        background-size: contain;
+        display: block;
+        height: 1.5rem;
+        width: 1.5rem;
+
+        &Text {
+            display: none;
+        }
+    }
+    .siteLogo {
+        background-image: url('data:image/svg+xml;charset%3DUS-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22245%22%20height%3D%2275%22%20viewBox%3D%220%200%20245%2075%22%20preserveAspectRatio%3D%22xMinYMid%22%20aria-hidden%3D%22true%22%20focusable%3D%22false%22%3E%3Cpath%20d%3D%22M24.247%2C55.968V41.132a6.442%2C6.442%2C0%2C0%2C1%2C.5-.863V38.316a6.548%2C6.548%2C0%2C0%2C1%2C.478-.651l.545-5.618.518%2C5.618a6.548%2C6.548%2C0%2C0%2C1%2C.491.651v1.952a6.641%2C6.641%2C0%2C0%2C1%2C.5.877v4.277h1.78l.677-3.48.651%2C3.48H32.26V26.058a8.208%2C8.208%2C0%2C0%2C1%2C1.009-1V22.9l.491-.837.611-6.375h0l.531%2C6.375s.491.784.491.837v2.178a8.208%2C8.208%2C0%2C0%2C1%2C1.009%2C1v3.2h9.523v-3.22a7.969%2C7.969%2C0%2C0%2C1%2C.5-1V22.9a7.478%2C7.478%2C0%2C0%2C1%2C.584-.744l.638-6.269.664%2C6.269a7.65%2C7.65%2C0%2C0%2C1%2C.651.744v2.178s.545.943.6%2C1.063v19.3h2.006l.611-3.48.624%2C3.48h1.753v-4.29a6.641%2C6.641%2C0%2C0%2C1%2C.5-.877V38.316l.638-.651.372-2.736V15.472A5.884%2C5.884%2C0%2C0%2C0%2C50.178%2C9.61H7.818s-6.256-.186-6.256%2C5.857V59.686s.159%2C5.9%2C6.256%2C5.9H22.733v-8.3ZM41.128%2C49.38a9.682%2C9.682%2C0%2C0%2C0-5.937%2C7.252%2C17.107%2C17.107%2C0%2C0%2C0-.345%2C3.6v5.206h12.6V60.231a18.86%2C18.86%2C0%2C0%2C0-.372-3.6%2C9.709%2C9.709%2C0%2C0%2C0-5.937-7.252M80.468%2C31.928a14.517%2C14.517%2C0%2C0%2C1-5.313.863c-6.176%2C0-10.121-3.759-10.121-9.775%2C0-5.592%2C3.838-10.16%2C10.944-10.16a13.746%2C13.746%2C0%2C0%2C1%2C4.542.744l-.983%2C4.423a8.181%2C8.181%2C0%2C0%2C0-3.32-.584%2C4.954%2C4.954%2C0%2C0%2C0-5.127%2C5.313%2C4.967%2C4.967%2C0%2C0%2C0%2C5.233%2C5.313%2C9.178%2C9.178%2C0%2C0%2C0%2C3.4-.584Zm13.122.478-.359-1.913h-.12a6.893%2C6.893%2C0%2C0%2C1-5.472%2C2.351%2C5.857%2C5.857%2C0%2C0%2C1-6.167-5.53h0q-.009-.164-.009-.327c0-4.967%2C4.463-7.345%2C11.223-7.3V19.4c0-1.023-.545-2.457-3.48-2.457a10.758%2C10.758%2C0%2C0%2C0-5.313%2C1.448L82.8%2C14.566a15.778%2C15.778%2C0%2C0%2C1%2C7.424-1.687c6.375%2C0%2C8.407%2C3.759%2C8.407%2C8.248v6.641a29.391%2C29.391%2C0%2C0%2C0%2C.279%2C4.649Zm-.77-9.031c-3.134%2C0-5.552.7-5.552%2C3.015a2.138%2C2.138%2C0%2C0%2C0%2C2.351%2C2.271%2C3.241%2C3.241%2C0%2C0%2C0%2C3.2-2.191%2C4.263%2C4.263%2C0%2C0%2C0%2C.12-1.023Zm8.62-3.984c0-2.377-.08-4.423-.159-6.1h5.153l.279%2C2.656h.12a6.986%2C6.986%2C0%2C0%2C1%2C5.91-3.081c3.9%2C0%2C6.84%2C2.577%2C6.84%2C8.208V32.419h-5.937V21.794c0-2.457-.863-4.144-3.015-4.144a3.161%2C3.161%2C0%2C0%2C0-3%2C2.231%2C4.064%2C4.064%2C0%2C0%2C0-.2%2C1.5V32.406h-5.99ZM129.3%2C7.822v5.512h4.263V17.7H129.3v6.92c0%2C2.311.545%2C3.36%2C2.338%2C3.36a9.749%2C9.749%2C0%2C0%2C0%2C1.766-.159V32.31a11.581%2C11.581%2C0%2C0%2C1-3.865.518%2C6.176%2C6.176%2C0%2C0%2C1-4.463-1.647c-1.089-1.129-1.647-2.975-1.647-5.671V17.664h-2.5v-4.33h2.537V9.15Zm10.878%2C16.921c.2%2C2.457%2C2.656%2C3.639%2C5.392%2C3.639a16.894%2C16.894%2C0%2C0%2C0%2C5.313-.784l.784%2C3.984a18.9%2C18.9%2C0%2C0%2C1-6.92%2C1.169c-6.495%2C0-10.2-3.759-10.2-9.735%2C0-4.848%2C3.015-10.2%2C9.656-10.2%2C6.176%2C0%2C8.527%2C4.808%2C8.527%2C9.536a14.2%2C14.2%2C0%2C0%2C1-.186%2C2.351Zm7-4.064c0-1.448-.624-3.865-3.36-3.865a3.9%2C3.9%2C0%2C0%2C0-3.679%2C3.865Zm7.876-1.089c0-2.816-.08-4.649-.159-6.3h5.113l.2%2C3.52h.159a5.618%2C5.618%2C0%2C0%2C1%2C5.167-3.984%2C6.083%2C6.083%2C0%2C0%2C1%2C1.248.08V18.5a8.487%2C8.487%2C0%2C0%2C0-1.607-.159%2C3.812%2C3.812%2C0%2C0%2C0-4.064%2C3.015%2C6.868%2C6.868%2C0%2C0%2C0-.12%2C1.328v9.7h-5.937Zm13.388%2C12.817c.08-1.248.159-3.559.159-5.711V6.016l5.937-1.328V15.565h.08a6.734%2C6.734%2C0%2C0%2C1%2C5.791-2.656c4.569%2C0%2C7.969%2C3.785%2C7.9%2C9.656%2C0%2C6.88-4.383%2C10.32-8.753%2C10.32a6.349%2C6.349%2C0%2C0%2C1-5.724-3.134h-.08l-.239%2C2.656Zm6.1-8.128a4.343%2C4.343%2C0%2C0%2C0%2C.12%2C1.049%2C3.6%2C3.6%2C0%2C0%2C0%2C3.48%2C2.816c2.537%2C0%2C4.1-1.952%2C4.1-5.392%2C0-2.975-1.328-5.313-4.1-5.313a3.679%2C3.679%2C0%2C0%2C0-3.48%2C2.935%2C4.967%2C4.967%2C0%2C0%2C0-.12%2C1.1Zm33.828%2C1.992c0%2C2.5.08%2C4.542.159%2C6.136h-5.167l-.279-2.656h-.12a6.813%2C6.813%2C0%2C0%2C1-5.977%2C3.121c-3.865%2C0-6.72-2.417-6.72-8.328V13.334h5.977v10.28c0%2C2.776.9%2C4.463%2C2.975%2C4.463A3.188%2C3.188%2C0%2C0%2C0%2C202.18%2C26a3.267%2C3.267%2C0%2C0%2C0%2C.2-1.328V13.334h5.99Zm2.656-6.681c0-2.816-.08-4.649-.159-6.3h5.113l.2%2C3.52h.159a5.618%2C5.618%2C0%2C0%2C1%2C5.161-3.981%2C6.083%2C6.083%2C0%2C0%2C1%2C1.248.08V18.5a8.487%2C8.487%2C0%2C0%2C0-1.607-.159%2C3.812%2C3.812%2C0%2C0%2C0-4.064%2C3.015%2C6.865%2C6.865%2C0%2C0%2C0-.12%2C1.328v9.7H211.02Zm19.723-6.256%2C2.856%2C9.3c.3%2C1.129.7%2C2.537.943%2C3.559h.12c.279-1.023.584-2.457.863-3.559l2.324-9.3h6.375l-4.463%2C12.591c-2.736%2C7.584-4.569%2C10.625-6.72%2C12.551a10.957%2C10.957%2C0%2C0%2C1-5.751%2C2.656l-1.248-5.047a7.451%2C7.451%2C0%2C0%2C0%2C2.577-1.009%2C6.906%2C6.906%2C0%2C0%2C0%2C2.457-2.391%2C1.567%2C1.567%2C0%2C0%2C0%2C.3-.863%2C2.178%2C2.178%2C0%2C0%2C0-.266-.97l-6.986-17.518Zm-151%2C47.813a12.724%2C12.724%2C0%2C0%2C1-5.485%2C1.209c-5.313%2C0-8.938-3.984-8.938-9.523%2C0-5.95%2C3.984-9.948%2C9.6-9.948a9.536%2C9.536%2C0%2C0%2C1%2C4.9%2C1.169l-.664%2C1.514a8.354%2C8.354%2C0%2C0%2C0-4.4-1.089c-5.02%2C0-7.584%2C3.812-7.584%2C8.208%2C0%2C4.9%2C3.068%2C8.088%2C7.385%2C8.088a10.333%2C10.333%2C0%2C0%2C0%2C4.662-1.089ZM83.2%2C39.565A1.5%2C1.5%2C0%2C0%2C1%2C81.768%2C38v-.031a1.594%2C1.594%2C0%2C0%2C1%2C1.514-1.634%2C1.541%2C1.541%2C0%2C0%2C1%2C1.476%2C1.6v.031a1.514%2C1.514%2C0%2C0%2C1-1.432%2C1.592h-.082ZM82.341%2C43.3h1.873V61.957H82.341Zm8.606-4.131v4.117H96.26v1.527H90.947V56.95c0%2C2.364.744%2C3.852%2C2.656%2C3.852a6.88%2C6.88%2C0%2C0%2C0%2C2.138-.279l.239%2C1.408a7.385%2C7.385%2C0%2C0%2C1-2.656.425%2C3.984%2C3.984%2C0%2C0%2C1-3.188-1.328%2C6.813%2C6.813%2C0%2C0%2C1-1.169-4.476V44.811H85.94V43.3h3.148V39.9ZM99.819%2C43.3l4.954%2C12.2c.5%2C1.328%2C1.009%2C2.842%2C1.328%2C3.984h0c.385-1.129.863-2.656%2C1.448-4.117l4.556-12.1h1.966l-5.538%2C13.892c-2.258%2C5.791-3.852%2C9.3-6.3%2C11.4A11.17%2C11.17%2C0%2C0%2C1%2C98.966%2C70.5l-.584-1.554a10.187%2C10.187%2C0%2C0%2C0%2C3.267-2.059%2C14.756%2C14.756%2C0%2C0%2C0%2C3.121-4.649%2C2.391%2C2.391%2C0%2C0%2C0%2C.239-.823%2C2.656%2C2.656%2C0%2C0%2C0-.239-.81L97.85%2C43.337Zm34.864%2C17.85a12.724%2C12.724%2C0%2C0%2C1-5.485%2C1.209c-5.313%2C0-8.938-3.984-8.938-9.523%2C0-5.95%2C3.984-9.948%2C9.6-9.948a9.536%2C9.536%2C0%2C0%2C1%2C4.9%2C1.169l-.664%2C1.514a8.354%2C8.354%2C0%2C0%2C0-4.4-1.089c-5.02%2C0-7.584%2C3.812-7.584%2C8.208%2C0%2C4.9%2C3.068%2C8.088%2C7.385%2C8.088a10.333%2C10.333%2C0%2C0%2C0%2C4.662-1.089Zm10.081%2C1.235c-4.821%2C0-8.553-3.772-8.553-9.6%2C0-6.375%2C4.2-9.921%2C8.832-9.921%2C5.18%2C0%2C8.673%2C3.891%2C8.673%2C9.6%2C0%2C6.92-4.781%2C9.921-8.912%2C9.921Zm.12-1.554c3.891%2C0%2C6.96-3.506%2C6.96-8.288%2C0-3.427-1.9-8.128-6.853-8.128s-6.92%2C4.237-6.92%2C8.248c0%2C4.662%2C2.948%2C8.168%2C6.76%2C8.168ZM170.3%2C57.415a41.776%2C41.776%2C0%2C0%2C0%2C.159%2C4.556H168.71l-.186-3.347h0a7.185%2C7.185%2C0%2C0%2C1-6.375%2C3.772c-2.364%2C0-6.375-1.209-6.375-8.248V43.3h1.873V53.789c0%2C3.984%2C1.248%2C6.96%2C4.941%2C6.96a6.176%2C6.176%2C0%2C0%2C0%2C5.525-3.772%2C6.747%2C6.747%2C0%2C0%2C0%2C.345-2.059V43.3h1.873Zm3.732-9.656a39.942%2C39.942%2C0%2C0%2C0-.159-4.476h1.753l.12%2C3.347h.08a7.026%2C7.026%2C0%2C0%2C1%2C6.415-3.772c1.793%2C0%2C6.535.89%2C6.535%2C7.889v11.2h-1.859V50.921c0-3.427-1.328-6.495-5.18-6.495a5.99%2C5.99%2C0%2C0%2C0-5.6%2C4.316%2C6.641%2C6.641%2C0%2C0%2C0-.239%2C1.634V61.971h-1.873Zm31.756%2C13.388a12.724%2C12.724%2C0%2C0%2C1-5.485%2C1.209c-5.313%2C0-8.938-3.984-8.938-9.523%2C0-5.95%2C3.984-9.948%2C9.6-9.948a9.536%2C9.536%2C0%2C0%2C1%2C4.9%2C1.169l-.664%2C1.514a8.341%2C8.341%2C0%2C0%2C0-4.4-1.089c-5.02%2C0-7.584%2C3.812-7.584%2C8.208%2C0%2C4.9%2C3.068%2C8.088%2C7.385%2C8.088a10.333%2C10.333%2C0%2C0%2C0%2C4.662-1.089ZM210.3%2C39.565A1.5%2C1.5%2C0%2C0%2C1%2C208.872%2C38v-.031a1.594%2C1.594%2C0%2C0%2C1%2C1.514-1.634%2C1.541%2C1.541%2C0%2C0%2C1%2C1.476%2C1.6v.031a1.514%2C1.514%2C0%2C0%2C1-1.432%2C1.592h-.082Zm-.863%2C3.732h1.873v18.66h-1.873Zm5.5-8.328h1.873V61.957h-1.873Z%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 100%;
+        display: block;
+        width: 12rem;
+        height: 5rem;
+    }
+    .siteLogoContainer{
+        float: left;
+        display: block;
+        width: 33.3333%;
+    }
+    .accountButton{
+        float: right;
+    }
+    .menuButtonWrapper{
+        float: right;
+        .menuButton{
+            border: none;
+            box-shadow: unset;
+            border-radius: 5px;
+            padding: .5rem .75rem;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            .menuButtonText{
+                display: none;
+            }
+            .navToggle{
+                display: inline-block;
+                vertical-align: middle;
+                width: 1.5rem;
+                .navToggleLine{
+                    &:first-child{
+                        top: 0;
+                    }
+                    &:last-child{
+                        bottom: 0;
+                    }
+                    backface-visibility: hidden;
+                    background-color: #fff;
+                    border-radius: 1px;
+                    display: block;
+                    height: 2px;
+                    margin: .375rem 0;
+                    position: relative;
+                    transition: .2s all;
+                    transition-delay: .3s;
+                }
+            }
+            &:after{
+                background-color: #b20d54;
+                bottom: 0;
+                content: '';
+                left: -1px;
+                position: absolute;
+                top: 0;
+                -ms-transform: translateX(-100%) skewX(-30deg);
+                transform: translateX(-100%) skewX(-30deg);
+                transition: .3s transform;
+                width: 100%;
+                z-index: -1;
+            }
+            &:hover{
+                text-decoration: none;
+                &:after{
+                    transform: translateX(0);
+                    z-index: 1
+                }
+            }
+            @media screen and (min-width: 600px){
+                padding: .75rem 1rem;
+            }
+            @media screen and (min-width: 760px){
+                padding-left: 1.125rem;
+                .navToggle{
+                    margin-left: .75rem;
+                }
+            }
+        }
+    }
+    .headerButton{
+        margin-top: .75rem;
+        font-size: 1rem;
+    }
+
+    @media screen and (min-width: 600px){
+        .siteLogo{
+            width: 16rem;
+            height: 4.875rem;
+            margin-top: 0;
+        }
+        .signInButton{
+            margin-right: 1.5rem;
+            padding: .5rem;
+            &Inner{
+                margin-right: .5rem;
+            }
+        }
+        .menuButtonWrapper .menuButton .menuButtonText{
+            display: inline;
+        }
+    }
+
+    @media screen and (min-width: 760px){
+        text-align: left;
+        &Icon {
+            &Text {
+                display: inline;
+            }
+        }
+        
+        .signInButton, .bookmarkButton {
+            border-color: transparent;
+        }
+
+        .siteLogo{
+            margin-top: .125rem;
+        }
+    }
+}
+.accountHeader{
+    display: block;
+}
+.bookmarks{
+    display: block;
+}
+
+.menuAnimateContainer{
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 5;
+}
+.menuSection{
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 4.5rem 1.5rem 3rem;
+    padding-top: 1.5rem;
+    background-color: $pink;
+    color: white;
+    height: 100vh;
+    width: 100vw;
+    z-index: 5;
+    h2{
+        color: white;
+        font-size: 1.25rem;
+        margin-bottom: 2.25rem;
+    }
+    .menuClose{
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background-color: transparent;
+        border: 2px solid white;
+        border-radius: 5px;
+        height: 4rem;
+        width: 4rem;
+        color:white;
+        padding: .8rem 1rem;
+        cursor: pointer;
+        .navToggle{
+            display: inline-block;
+            vertical-align: middle;
+            width: 1.5rem;
+            .navToggleLine{
+                &:first-child{
+                    top: .5rem;
+                    transform: rotate(-45deg);
+                }
+                &:nth-child(2){
+                    opacity: 0;
+                }
+                &:last-child{
+                    bottom: .5rem;
+                    transform: rotate(45deg);
+                }
+                backface-visibility: hidden;
+                background-color: #fff;
+                border-radius: 1px;
+                display: block;
+                height: 2px;
+                margin: .375rem 0;
+                position: relative;
+                transition: .2s all;
+                transition-delay: .3s;
+            }
+        }
+    }
+    .menuList{
+        margin: .75rem 0 1.5rem;
+        list-style-type: none;
+        .menuLink{
+            margin-top: .5rem;
+            .link{
+                color: white;
+                text-decoration: none;
+            }
+        }
+    }
+    @media screen and (min-width: 760px){
+        width: 40vw;
+    }
+}
+.social {
+    &Container {
+        .socialLinks {
+            padding-left: 0;
+            
+            li {
+                margin-left: 0;   
+            }   
+        }  
+    }
+
+    &Icon {
+        background-position: center;
+        background-size: cover;
+        display: block;
+        height: 2rem;
+        width: 2rem;
+
+        &Full {
+            height: 100%;
+            width: 100%; 
+        }
+        
+        &Fallback {
+            border: 0;
+            clip: rect(0 0 0 0);
+            height: 1px;
+            margin: -1px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            width: 1px;
+        }
+
+        @include socials;
+    }
+
+    &Links {
+        a {
+            display: block;
+            height: 2.5rem;
+            transition: .3s;
+            width: 2.5rem;
+        }
+      list-style-type: none; 
+      
+      li {
+        display: inline-block;
+        margin-left: 1rem;
+
+        &:hover {
+            opacity: .7;
+        }
+      }
+
+      @include socials;
+
+    }
+
+    &Platform{
+        display: inline-block;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    .social {
+        &Container {
+            text-align: right;
+        }
+
+        &Links {
+
+        }
+
+        &Platform {
+
+        }
+    }
+}

@@ -85,6 +85,9 @@ export const getSubmission = /* GraphQL */ `
       }
       formID
       values
+      status
+      startDate
+      submissionDate
       createdAt
       updatedAt
     }
@@ -102,6 +105,9 @@ export const listSubmissions = /* GraphQL */ `
         userID
         formID
         values
+        status
+        startDate
+        submissionDate
         createdAt
         updatedAt
       }

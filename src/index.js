@@ -6,9 +6,11 @@ import reportWebVitals from './reportWebVitals';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from './theme'
 import { BrowserRouter } from 'react-router-dom';
-import Amplify from "aws-amplify";
+import Amplify, { Auth } from "aws-amplify";
 import awsExports from "./aws-exports";
+import authExport from './auth-config';
 Amplify.configure(awsExports);
+Auth.configure(authExport);
 
 ReactDOM.render(
   <React.StrictMode>
