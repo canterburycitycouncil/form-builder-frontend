@@ -76,6 +76,7 @@ const FieldController = React.forwardRef((props, ref) => {
                         </IconButton>
                     </div>
                     <form onSubmit={e => handleSubmit(e)}>
+                        <TextField id="id" label="Field id" onChange={handleChange} name="id" value={field.id ? field.id : ''} />
                         <TextField id="label" label="Label" onChange={handleChange} name="label" value={field.label ? field.label : ''} />
                         <FormGroup>
                             <FormControl>

@@ -17,6 +17,8 @@ const Form = (props) => {
     const [errorText, setErrorText] = useState([]);
     const [startDate, setStartDate] = useState(null);
     const [anonymous, setAnonymous] = useState(false);
+    const [formSubmitted, setFormSubmitted] = useState(false);
+    const [submissionId, setSubmissionId] = useState(null);
 
     let location = useLocation();
     
@@ -53,19 +55,19 @@ const Form = (props) => {
             }, []);
             fields.forEach(field => {
                 if(field.defaultValue){
-                    formValuesDefault[field.label] = field.defaultValue;
+                    formValuesDefault[field.id] = field.defaultValue;
                 }else{
                     switch(field.type){
                         case 'select':
                             let selectValues = field.values;
                             if(selectValues && selectValues.length > 0){
-                                formValuesDefault[field.label] = selectValues[0].key;
+                                formValuesDefault[field.id] = selectValues[0].key;
                             }else{
-                                formValuesDefault[field.label] = '';
+                                formValuesDefault[field.id] = '';
                             }
                         break;
                         default:
-                            formValuesDefault[field.label] = '';
+                            formValuesDefault[field.id] = '';
                     }
                 }
             });
@@ -107,13 +109,13 @@ const Form = (props) => {
         let result = true;
         let fields = formScheme.pages[currentPage].fields;
         fields.forEach(field => {
-            if(field.required && !formValues[field.label]){
-                handleError(`Field ${field.label} is required.`, field.label);
+            if(field.required && !formValues[field.id]){
+                handleError(`Field ${field.label} is required.`, field.id);
                 result = false;
             }else if(field.validations && field.validations.length > 0){
                 field.validations.forEach(validation => {
                     if(!validation.runValidation(field.value)){
-                        handleError(validation.getErrorText(field.label), field.label);
+                        handleError(validation.getErrorText(field.label), field.id);
                         result = false;
                     }
                 });
@@ -146,6 +148,7 @@ const Form = (props) => {
     }
 
     const handleSubmit = async (event) => {
+        setIsLoading(true);
         event.preventDefault();
         let formCopy = {...formScheme};
         formCopy.pages = JSON.stringify(formCopy.pages);
@@ -153,14 +156,18 @@ const Form = (props) => {
         let subDateFormatted = getFormattedDate(submitDate);
         if(formScheme && formValues){
             let submission = {
-                formId: formScheme.id,
-                form: formCopy,
+                formID: formScheme.id,
                 status: 'submitted',
                 values: JSON.stringify(formValues),
                 startDate: startDate,
                 submissionDate: subDateFormatted
             };
-            await API.graphql(graphqlOperation(createSubmission, {input: submission}));
+            let submissionCreated = await API.graphql(graphqlOperation(createSubmission, {input: submission}));
+            if(submissionCreated && submissionCreated.data){
+                setSubmissionId(submissionCreated.data.createSubmission.id);
+                setFormSubmitted(true);
+                setIsLoading(false);
+            }
         }
     }
 
@@ -204,7 +211,7 @@ const Form = (props) => {
                 </div>
             ) : (
                 <React.Fragment>
-                    {formScheme && formValues ? (
+                    {formScheme && formValues && !formSubmitted ? (
                         <div className="contentBox contentBoxOffset">
                             {errorText && errorText.length > 0 ? (
                                 <div className="information-box error">
@@ -226,17 +233,17 @@ const Form = (props) => {
                                             switch(field.type){
                                                 case 'textfield':
                                                     fieldRender = (
-                                                            <input className="frontendTextfield" name={field.label} value={formValues[field.label]} onChange={e => handleChange(e)} />
+                                                            <input className="frontendTextfield" name={field.id} value={formValues[field.id]} onChange={e => handleChange(e)} />
                                                     );
                                                 break;
                                                 case 'textarea':
                                                     fieldRender = (
-                                                            <textarea className="frontendTextarea" name={field.label} value={formValues[field.label]} onChange={e => handleChange(e)} />
+                                                            <textarea className="frontendTextarea" name={field.id} value={formValues[field.id]} onChange={e => handleChange(e)} />
                                                     )
                                                 break;
                                                 case 'select':
                                                     fieldRender = (
-                                                            <select className="frontendSelect" name={field.label} value={formValues[field.label]} onChange={e => handleChange(e)}>
+                                                            <select className="frontendSelect" name={field.id} value={formValues[field.id]} onChange={e => handleChange(e)}>
                                                                     <option value="">--Please choose and option--</option>
                                                                 {field.values.map(value => (
                                                                     <option value={value.key}>{value.value}</option>
@@ -246,8 +253,8 @@ const Form = (props) => {
                                                 break;
                                             }
                                             return (                                            
-                                                <div key={field.label.replace(/ /g, '-')} className={`formControl${fieldErrors.includes(field.label) ? ' fieldError' : ''}`}>
-                                                    <label htmlFor={field.label} className="frontendLabel">{field.label}{field.required ? (<span className="fieldRequired"> * </span>) : ''}</label>
+                                                <div key={field.id} className={`formControl${fieldErrors.includes(field.id) ? ' fieldError' : ''}`}>
+                                                    <label htmlFor={field.id} className="frontendLabel">{field.label}{field.required ? (<span className="fieldRequired"> * </span>) : ''}</label>
                                                     {fieldRender}
                                                 </div>);
                                         })}
@@ -265,7 +272,15 @@ const Form = (props) => {
                                 ) : (<p>There was an error fetching this page of the form</p>)}
                             </form>
                         </div>
-                    ) : (<div className="contentBox">Form could not be found</div>)}
+                    ) : (formSubmitted ? (
+                        <div className="contentBox contentBoxOffset">
+                            <h2>Form submission complete</h2>
+                            <p>Your form was successsfully submitted. The form reference for this submission is {submissionId}.</p>
+                            <a className="button" href="https://www.canterbury.gov.uk/">Continue</a>
+                        </div>
+                    ) : (
+                        <div className="contentBox">Form could not be found</div>
+                        ))}
                 </React.Fragment>
             )}
             </FrontendLayout>
