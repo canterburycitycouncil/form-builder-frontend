@@ -28,7 +28,7 @@ const Form = (props) => {
         if(splitPath.length === 3){
             id = splitPath[2];
         }
-        if(!formScheme && id){
+        if(!formScheme && !formValues && id){
                 if(sessionStorage.getItem('formScheme') && (sessionStorage.getItem('id') === id)){
                     let formData = sessionStorage.getItem('formScheme');
                     setFormScheme(JSON.parse(formData));
