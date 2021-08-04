@@ -1,4 +1,4 @@
-import { Grid, Divider, List, ListItem, ListItemIcon, ListItemText, Typography } from "@material-ui/core";
+import { Grid, Divider, List, ListItem, ListItemIcon, ListItemText, Typography, Tabs, Tab, Box } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import Layout from '../components/layout';
 import { useLocation, Link , useHistory} from 'react-router-dom';
@@ -10,11 +10,43 @@ import awsExports from "../aws-exports";
 import { listForms } from '../graphql/queries';
 import { createForm, updateForm, deleteForm } from '../graphql/mutations';
 import { onCreateForm, onUpdateForm, onDeleteForm } from '../graphql/subscriptions';
+import FormDisplay from '../components/form-display';
+import FormSubmissions from '../components/form-submissions';
+import FormRules from '../components/form-rules';
+
 Amplify.configure(awsExports);
+
+function a11yProps(index) {
+    return {
+      id: `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`,
+    };
+  }
+
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+  
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box p={3}>
+            {children}
+          </Box>
+        )}
+      </div>
+    );
+  }
 
 const Forms = () => {
     const [forms, setForms] = useState(null);
     const [subscriptions, setSubscriptions] = useState(null);
+    const [currentTab, setCurrentTab] = useState('preview');
     let location = useLocation();
     let splitPath = location.pathname.split('/');
     let id;
@@ -22,13 +54,9 @@ const Forms = () => {
     if(splitPath.length > 3 && splitPath[3] !== 'add'){
         id = splitPath[3];
     }
-    let edit = false;
     const history = useHistory();
     if(!id && location.pathname === '/admin/forms/add'){
         isNewForm = true;
-    }
-    if(location.pathname.endsWith('/edit')){
-        edit = true;
     }
 
     useEffect(() => {
@@ -108,6 +136,7 @@ const Forms = () => {
                 setForms(forms);
                 resolve();
             }catch(err) {
+                console.log(err);
                 console.log('error fetching forms');
                 reject();
             }
@@ -148,6 +177,11 @@ const Forms = () => {
         history.push('/admin/forms');
     }
 
+    const changeTab = (event, newValue) => {
+        console.log('hello');
+        setCurrentTab(newValue);
+    }
+
     return (
         <Layout title="forms">
             <Grid container>
@@ -182,11 +216,32 @@ const Forms = () => {
                 </Grid>
                 <Divider orientation="vertical" flexItem style={{marginLeft: '-1px'}} />
                 <Grid item xs={9} className="formContainer">
-                    {((id || id === 0) && forms) || isNewForm ? (
-                        <FormController id={id} isNewForm={isNewForm} edit={isNewForm ? true : edit} forms={forms} onFormSave={saveForm} onFormDelete={handleDeleteForm} />
-                    ): (
+                    {((id || id === 0) && forms) ? (
+                        <React.Fragment>
+                            <Tabs value={currentTab} onChange={changeTab}>
+                                    <Tab label="Preview" value="preview" />
+                                    <Tab label="Edit" value="edit" />
+                                    <Tab label="Submissions" value="submissions" />
+                                    <Tab label="Rules" values="rules" />
+                            </Tabs>
+                            <TabPanel value={currentTab} index="preview">
+                                <FormDisplay id={id} />
+                            </TabPanel>
+                            <TabPanel value={currentTab} index="edit">
+                                <FormController id={id} isNewForm={false} edit={true} forms={forms} onFormSave={saveForm} onFormDelete={handleDeleteForm} />
+                            </TabPanel>
+                            <TabPanel value={currentTab} index="submissions">
+                                <FormSubmissions form={forms.find(form => form.id === id)} />
+                            </TabPanel>
+                            <TabPanel value={currentTab} index="rules">
+                                <FormRules form={forms.find(form => form.id === id)} />
+                            </TabPanel>
+                        </React.Fragment>
+                    ) : (isNewForm ? (
+                        <FormController id={id} isNewForm={true} edit={true} forms={forms} onFormSave={saveForm} onFormDelete={handleDeleteForm} />
+                    ) : (
                         <p>No form selected</p>
-                    )}
+                    ))}
                 </Grid>
             </Grid>
         </Layout>

@@ -15,6 +15,7 @@ export const getForm = /* GraphQL */ `
         updatedAt
       }
       pages
+      totalSubs
       createdAt
       updatedAt
     }
@@ -32,6 +33,7 @@ export const listForms = /* GraphQL */ `
         name
         categoryID
         pages
+        totalSubs
         createdAt
         updatedAt
       }
@@ -72,6 +74,7 @@ export const getSubmission = /* GraphQL */ `
   query GetSubmission($id: ID!) {
     getSubmission(id: $id) {
       id
+      subID
       userID
       user {
         id
@@ -102,6 +105,7 @@ export const listSubmissions = /* GraphQL */ `
     listSubmissions(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        subID
         userID
         formID
         values

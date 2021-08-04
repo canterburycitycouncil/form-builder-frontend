@@ -18,6 +18,7 @@ export const createForm = /* GraphQL */ `
         updatedAt
       }
       pages
+      totalSubs
       createdAt
       updatedAt
     }
@@ -40,6 +41,7 @@ export const updateForm = /* GraphQL */ `
         updatedAt
       }
       pages
+      totalSubs
       createdAt
       updatedAt
     }
@@ -62,6 +64,7 @@ export const deleteForm = /* GraphQL */ `
         updatedAt
       }
       pages
+      totalSubs
       createdAt
       updatedAt
     }
@@ -116,6 +119,7 @@ export const createSubmission = /* GraphQL */ `
   ) {
     createSubmission(input: $input, condition: $condition) {
       id
+      subID
       userID
       user {
         id
@@ -144,6 +148,7 @@ export const updateSubmission = /* GraphQL */ `
   ) {
     updateSubmission(input: $input, condition: $condition) {
       id
+      subID
       userID
       user {
         id
@@ -172,6 +177,7 @@ export const deleteSubmission = /* GraphQL */ `
   ) {
     deleteSubmission(input: $input, condition: $condition) {
       id
+      subID
       userID
       user {
         id

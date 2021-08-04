@@ -36,7 +36,9 @@ const FormController = (props) => {
                 setCurrentPage(0);
             }else if(props.id){
                 let newForm = props.forms.find(form => form.id === props.id);
-                newForm.pages = JSON.parse(newForm.pages);
+                if(typeof newForm.pages === 'string'){
+                    newForm.pages = JSON.parse(newForm.pages);
+                }
                 sessionStorage.setItem('currentForm', JSON.stringify(newForm));
                 setForm(newForm);
                 setCurrentPage(0);
@@ -49,7 +51,8 @@ const FormController = (props) => {
                             name: 'Page 1',
                             fields: []
                         }
-                    ]
+                    ],
+                    totalSubs: 0
                 };
                 sessionStorage.setItem('currentForm', JSON.stringify(newForm));
                 setForm(newForm);

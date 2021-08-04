@@ -3,6 +3,7 @@ import Forms from './pages/forms';
 import Form from './pages/form';
 import HomeIcon from '@material-ui/icons/Home';
 import ListIcon from '@material-ui/icons/List';
+import Submission from './pages/submission';
 
 
 const routes = [
@@ -24,6 +25,12 @@ const routes = [
         component: Forms,
         menuName: 'Forms',
         icon: ListIcon,
+        adminRoute: true
+    },
+    {
+        inMenu: false,
+        path: '/admin/submissions/:id',
+        component: Submission,
         adminRoute: true
     },
     {

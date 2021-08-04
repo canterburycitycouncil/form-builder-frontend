@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
 import Overlay from "../components/overlay";
 import { getForm } from "../graphql/queries";
-import { createSubmission } from '../graphql/mutations';
+import { createSubmission, updateForm } from '../graphql/mutations';
 import FrontendLayout from '../components/frontend-layout'
 
 
@@ -155,16 +155,19 @@ const Form = (props) => {
         let submitDate = new Date();
         let subDateFormatted = getFormattedDate(submitDate);
         if(formScheme && formValues){
+            let subID = formScheme.totalSubs+1;
             let submission = {
+                subID: subID,
                 formID: formScheme.id,
                 status: 'submitted',
                 values: JSON.stringify(formValues),
                 startDate: startDate,
                 submissionDate: subDateFormatted
             };
+            let formUpdated = await API.graphql(graphqlOperation(updateForm, {input: {id: formScheme.id, totalSubs: subID}}));
             let submissionCreated = await API.graphql(graphqlOperation(createSubmission, {input: submission}));
             if(submissionCreated && submissionCreated.data){
-                setSubmissionId(submissionCreated.data.createSubmission.id);
+                setSubmissionId(submissionCreated.data.createSubmission.subID);
                 setFormSubmitted(true);
                 setIsLoading(false);
             }
