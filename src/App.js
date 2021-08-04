@@ -23,6 +23,7 @@ const App = () => {
             console.log('could not retrieve user');
           });
         }).catch(err => {
+          console.log(err);
           console.log('no currently authenticated user');
         });
       }
