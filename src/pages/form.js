@@ -73,6 +73,8 @@ const Form = (props) => {
             });
             setFormValues(formValuesDefault);
             setIsLoading(false);
+        }else{
+            setIsLoading(false);
         }
         if(!startDate && sessionStorage.getItem('startDate')){
             setStartDate(sessionStorage.getItem('startDate'));
