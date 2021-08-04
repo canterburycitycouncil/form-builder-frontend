@@ -190,6 +190,9 @@ const Form = (props) => {
     }
 
     console.log(props.user);
+    console.log(formValues);
+    console.log(formScheme);
+    console.log(formSubmitted);
 
     return (
         <React.Fragment>
