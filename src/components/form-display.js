@@ -1,69 +1,61 @@
 import { API, graphqlOperation } from "aws-amplify";
 import React, { useEffect, useState } from "react";
-import { useLocation } from 'react-router-dom';
-import Overlay from "../components/overlay";
-import { getForm } from "../graphql/queries";
+import { useLocation, Link, useParams, useHistory } from 'react-router-dom';
+import { createSubmission, updateForm } from '../graphql/mutations';
+import freshdeskIntegration from '../outputs/freshdesk';
 
-const FormDisplay = ({ id }) => {
-    const [formScheme, setFormScheme] = useState(null);
+const FormDisplay = ({ id, user, onIsLoading, formScheme }) => {
     const [formValues, setFormValues] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
     const [fieldErrors, setFieldErrors] = useState([]);
     const [errorText, setErrorText] = useState([]);
     const [startDate, setStartDate] = useState(null);
-    const [anonymous, setAnonymous] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [submissionId, setSubmissionId] = useState(null);
 
-    let location = useLocation();
+    const location = useLocation();
+    const history = useHistory();
+    let splitPath = location.pathname.split('/');
+    splitPath.pop();
+    let formBaseUrl = splitPath.join('/');
+    const { page } = useParams();
+
     
     useEffect(async () => {
-        if(!formScheme && id){
-                if(sessionStorage.getItem('formScheme') && (sessionStorage.getItem('id') === id)){
-                    let formData = sessionStorage.getItem('formScheme');
-                    setFormScheme(JSON.parse(formData));
-                }else{
-                    sessionStorage.removeItem('formValues');
-                    let formData = await API.graphql(graphqlOperation(getForm, {id: id}));
-                    if(formData.data){
-                        formData.data.getForm.pages = JSON.parse(formData.data.getForm.pages);
-                        sessionStorage.setItem('formScheme', JSON.stringify(formData.data.getForm));
-                        sessionStorage.setItem('id', id);
-                        setFormScheme(formData.data.getForm);
-                    }
-                }
-        }else if(formScheme && !formValues){
+        if(formScheme && !formValues){
             let formValuesDefault = {};
             let pages = formScheme.pages;
+            let params = getParamsFromSearch(location.search);
             let fields = pages.reduce((acc, page) => {
-                if(page.fields){
-                    page.fields.forEach(field => {
+                if(page.components){
+                    page.components.forEach(field => {
                         acc.push(field);
                     })
                 }
-                return acc
+                return acc;
             }, []);
             fields.forEach(field => {
                 if(field.defaultValue){
-                    formValuesDefault[field.id] = field.defaultValue;
+                    formValuesDefault[field.name] = field.defaultValue;
+                }else if(field.options.parameterName && params && params[field.options.parameterName]){
+                        formValuesDefault[field.name] = params[field.options.parameterName];
                 }else{
                     switch(field.type){
                         case 'select':
                             let selectValues = field.values;
                             if(selectValues && selectValues.length > 0){
-                                formValuesDefault[field.id] = selectValues[0].key;
+                                formValuesDefault[field.name] = selectValues[0].key;
                             }else{
-                                formValuesDefault[field.id] = '';
+                                formValuesDefault[field.name] = '';
                             }
                         break;
                         default:
-                            formValuesDefault[field.id] = '';
+                            formValuesDefault[field.name] = '';
                     }
                 }
             });
             setFormValues(formValuesDefault);
-            setIsLoading(false);
+            onIsLoading(false);
         }
         if(!startDate && sessionStorage.getItem('startDate')){
             setStartDate(sessionStorage.getItem('startDate'));
@@ -73,6 +65,20 @@ const FormDisplay = ({ id }) => {
             setStartDate(newStartDate);
         }
     }, [formScheme])
+
+    const getParamsFromSearch = (searchString) => {
+        if(searchString){
+            searchString = searchString.replace('?', '');
+            let searchStringPairs = searchString.split('&');
+            let resObj = {};
+            searchStringPairs.forEach(pair => {
+                let pairSplit = pair.split('=');
+                resObj[pairSplit[0]] = pairSplit[1];
+            });
+            return resObj;
+        }
+        return null;
+    }
 
     const handleChange = (event) => {
         let label = event.target.name;
@@ -86,43 +92,56 @@ const FormDisplay = ({ id }) => {
 
     const handleBack = (event) => {
         event.preventDefault();
+        console.log(currentPage);
+        history.push(formBaseUrl+formScheme.pages[currentPage - 1].path+location.search);
         setCurrentPage(currentPage - 1);
     }
 
     const handleNext = (event) => {
         event.preventDefault();
         let result = true;
-        let fields = formScheme.pages[currentPage].fields;
+        let fields = formScheme.pages[currentPage].components;
+        let errors = [];
+        let errorFields = [];
         fields.forEach(field => {
-            if(field.required && !formValues[field.id]){
-                handleError(`Field ${field.label} is required.`, field.id);
+            if(field.options.required || field.options.required === undefined && !formValues[field.name]){
                 result = false;
+                errors.push(`Field ${field.title} is required`);
+                errorFields.push(field.name);
             }else if(field.validations && field.validations.length > 0){
                 field.validations.forEach(validation => {
                     if(!validation.runValidation(field.value)){
-                        handleError(validation.getErrorText(field.label), field.id);
+                        errors.push(validation.getErrorText(field.title));
+                        errorFields.push(field.name);
                         result = false;
                     }
                 });
             }
         });
         if(result){
+            history.push(formBaseUrl+formScheme.pages[currentPage].next[0].path+location.search);
             setCurrentPage(currentPage+1);
             setErrorText([]);
             setFieldErrors([]);
+        }else{
+            handleError(errors, errorFields);
         }
     }
 
     const handleError = (text, field) => {
         let errorTextCopy = errorText.slice(0, errorText.length);
         let fieldErrorsCopy = fieldErrors.slice(0, fieldErrors.length);
-        if(errorText.length === 0){
-            errorTextCopy.push('There are one or more errors in your responses. Please fix these before continuing.');
-        }
-        errorTextCopy.push(text);
-        fieldErrorsCopy.push(field);
-        setErrorText(errorTextCopy);
-        setFieldErrors(fieldErrorsCopy);
+        field.forEach((fieldName, index) => {
+            if(fieldErrors.indexOf(fieldName) === -1){
+                if(errorTextCopy.length === 0){
+                    errorTextCopy.push('There are one or more errors in your responses. Please fix these before continuing.');
+                }
+                errorTextCopy.push(text[index]);
+                fieldErrorsCopy.push(fieldName);
+                setErrorText(errorTextCopy);
+                setFieldErrors(fieldErrorsCopy);
+            }
+        })
     }
 
     const getFormattedDate = (date) => {
@@ -133,23 +152,59 @@ const FormDisplay = ({ id }) => {
     }
 
     const handleSubmit = async (event) => {
-        setIsLoading(true);
+        onIsLoading(true);
         event.preventDefault();
         let formCopy = {...formScheme};
         formCopy.pages = JSON.stringify(formCopy.pages);
         let submitDate = new Date();
+        let subDateFormatted = getFormattedDate(submitDate);
         if(formScheme && formValues){
-                setSubmissionId('X');
-                setFormSubmitted(true);
-                setIsLoading(false);
+                if(location.pathname.indexOf('admin') > -1){
+                    setSubmissionId('X');
+                    setFormSubmitted(true);
+                    onIsLoading(false);   
+                }else{
+                    let subID = formScheme.totalSubs+1;
+                    console.log(formScheme.totalSubs);
+                    console.log(subID);
+                    let submission = {
+                        subID: subID,
+                        formID: formScheme.id,
+                        status: 'submitted',
+                        values: JSON.stringify(formValues),
+                        startDate: startDate,
+                        submissionDate: subDateFormatted
+                    };
+                    let formUpdated = await API.graphql(graphqlOperation(updateForm, {input: {id: formScheme.id, totalSubs: subID}}));
+                    let submissionCreated = await API.graphql(graphqlOperation(createSubmission, {input: submission}));
+                    if(submissionCreated && submissionCreated.data){
+                        setSubmissionId(submissionCreated.data.createSubmission.subID);
+                        setFormSubmitted(true);
+                        onIsLoading(false);
+                    }
+                    if(formScheme.outputs && formScheme.outputs.length > 0){
+                        formScheme.outputs.forEach(async output => {
+                            switch(output.type){
+                                case 'freshdesk':
+                                    try{
+                                        const ticketRes = await freshdeskIntegration(formValues, output.outputConfiguration.customFields, formScheme.id);
+                                        console.log(ticketRes);
+                                    }catch(err){
+                                        console.log(err)
+                                    }
+                                break;
+                                default:
+                                    console.log('integration not found');
+                            }
+                        });
+                    }
+                }
         }
     }
+    console.log(formScheme);
 
     return (
         <React.Fragment>
-            {isLoading ? (
-                <Overlay />
-            ) : ''}
             {formScheme && formValues && !formSubmitted ? (
                 <div className="contentBox contentBoxOffset">
                     {errorText && errorText.length > 0 ? (
@@ -164,51 +219,88 @@ const FormDisplay = ({ id }) => {
                             ) : ''}
                         </div>
                     ): ''}
+                    {currentPage || currentPage === 0 ? (
+                        <h2>{formScheme.pages[currentPage].title}</h2>
+                    ) : ''}
                     <form onSubmit={e => handleSubmit(e)}>
-                        {currentPage || currentPage === 0 ? (
+                        {(currentPage || currentPage === 0) && page !== 'summary' ? (
                             <React.Fragment>
-                                {formScheme.pages[currentPage].fields.map(field => {
+                                {formScheme.pages[currentPage].components.map(field => {
+                                    // console.log(field);
                                     let fieldRender;
-                                    switch(field.type){
-                                        case 'textfield':
-                                            fieldRender = (
-                                                    <input className="frontendTextfield" name={field.id} value={formValues[field.id]} onChange={e => handleChange(e)} />
-                                            );
-                                        break;
-                                        case 'textarea':
-                                            fieldRender = (
-                                                    <textarea className="frontendTextarea" name={field.id} value={formValues[field.id]} onChange={e => handleChange(e)} />
-                                            )
-                                        break;
-                                        case 'select':
-                                            fieldRender = (
-                                                    <select className="frontendSelect" name={field.id} value={formValues[field.id]} onChange={e => handleChange(e)}>
-                                                            <option value="">--Please choose and option--</option>
-                                                        {field.values.map(value => (
-                                                            <option value={value.key}>{value.value}</option>
-                                                        ))}
-                                                    </select>
-                                            );
-                                        break;
+                                    if(!field.options.hideField){
+                                        switch(field.type){
+                                            case 'TextField':
+                                                fieldRender = (
+                                                        <input className="frontendTextfield" name={field.name} value={formValues[field.name]} onChange={e => handleChange(e)} />
+                                                );
+                                            break;
+                                            case 'EmailAddressField':
+                                                fieldRender = (
+                                                        <input className="frontendTextfield" name={field.name} value={formValues[field.name]} onChange={e => handleChange(e)} />
+                                                );
+                                            break;
+                                            case 'TelephoneNumberField':
+                                                fieldRender = (
+                                                        <input className="frontendTextfield" name={field.name} value={formValues[field.name]} onChange={e => handleChange(e)} />
+                                                );
+                                            break;
+                                            case 'MultilineTextField':
+                                                fieldRender = (
+                                                        <textarea className="frontendTextarea" name={field.name} value={formValues[field.name]} onChange={e => handleChange(e)} />
+                                                )
+                                            break;
+                                            case 'select':
+                                                fieldRender = (
+                                                        <select className="frontendSelect" name={field.name} value={formValues[field.name]} onChange={e => handleChange(e)}>
+                                                                <option value="">--Please choose and option--</option>
+                                                            {field.values.map(value => (
+                                                                <option value={value.key}>{value.value}</option>
+                                                            ))}
+                                                        </select>
+                                                );
+                                            break;
+                                        }
+                                        return (                                            
+                                            <div key={field.name} className={`formControl${fieldErrors.includes(field.name) ? ' fieldError' : ''}`}>
+                                                <label htmlFor={field.name} className={`frontendLabel${field.options.hideTitle ? " visuallyHidden" : ''}`}>{field.title}{field.options.required === true || field.options.required === undefined ? (<span className="fieldRequired"> * </span>) : ''}</label>
+                                                {fieldRender}
+                                            </div>);
+                                    }else{
+                                        return '';
                                     }
-                                    return (                                            
-                                        <div key={field.id} className={`formControl${fieldErrors.includes(field.id) ? ' fieldError' : ''}`}>
-                                            <label htmlFor={field.id} className="frontendLabel">{field.label}{field.required ? (<span className="fieldRequired"> * </span>) : ''}</label>
-                                            {fieldRender}
-                                        </div>);
+                                    
                                 })}
                                 <div className="formActionsContainer">
                                     {currentPage > 0 ? (
                                         <button className="button formBackButton" type="button" onClick={e => handleBack(e)}>Back</button>
                                     ) : ''}
-                                    {currentPage < formScheme.pages.length - 1 ? (
+                                    {formScheme.pages[currentPage].next ? (
                                         <button className="button formNextButton" type="button" onClick={e => handleNext(e)}>Next</button>
                                     ): currentPage === formScheme.pages.length - 1 ? (
                                         <button className="button formSubmitButton" type="submit">Submit</button>
                                     ): ''}
                                 </div>
                             </React.Fragment>
-                        ) : (<p>There was an error fetching this page of the form</p>)}
+                        ) : (page === 'summary' ? (
+                            <React.Fragment>
+                                <p>Pressing "Submit" will send the details confirmed below for processing.</p>
+                                <ul className="list listFormSummary">
+                                    {Object.keys(formValues).map(fieldName => {
+                                        return (
+                                            <li key={`field_value_${fieldName}`} className="listItem">
+                                                <span className="listItemTitle">{fieldName}</span>
+                                                <div className="listItemContent">{formValues[fieldName]}</div>
+                                            </li>
+                                        )
+                                    })}
+                                </ul>
+                                <div className="formActionsContainer">
+                                    <button className="button formBackButton" type="button" onClick={e => handleBack(e)}>Back</button>
+                                    <button className="button formSubmitButton" type="submit">Submit</button>
+                                </div>
+                            </React.Fragment>
+                        ) : (<p>There was an error fetching this page of the form</p>))}
                     </form>
                 </div>
             ) : (formSubmitted ? (
