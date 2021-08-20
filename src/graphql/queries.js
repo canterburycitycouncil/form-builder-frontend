@@ -6,14 +6,15 @@ export const getForm = /* GraphQL */ `
     getForm(id: $id) {
       id
       name
-      categoryID
-      category {
-        id
-        name
-        parentID
-        createdAt
-        updatedAt
-      }
+      conditions
+      fees
+      lists
+      metadata
+      outputs
+      sections
+      skipSummary
+      startPage
+      version
       pages
       totalSubs
       createdAt
@@ -31,7 +32,15 @@ export const listForms = /* GraphQL */ `
       items {
         id
         name
-        categoryID
+        conditions
+        fees
+        lists
+        metadata
+        outputs
+        sections
+        skipSummary
+        startPage
+        version
         pages
         totalSubs
         createdAt

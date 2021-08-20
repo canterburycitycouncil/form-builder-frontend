@@ -6,14 +6,15 @@ export const onCreateForm = /* GraphQL */ `
     onCreateForm {
       id
       name
-      categoryID
-      category {
-        id
-        name
-        parentID
-        createdAt
-        updatedAt
-      }
+      conditions
+      fees
+      lists
+      metadata
+      outputs
+      sections
+      skipSummary
+      startPage
+      version
       pages
       totalSubs
       createdAt
@@ -26,14 +27,15 @@ export const onUpdateForm = /* GraphQL */ `
     onUpdateForm {
       id
       name
-      categoryID
-      category {
-        id
-        name
-        parentID
-        createdAt
-        updatedAt
-      }
+      conditions
+      fees
+      lists
+      metadata
+      outputs
+      sections
+      skipSummary
+      startPage
+      version
       pages
       totalSubs
       createdAt
@@ -46,14 +48,15 @@ export const onDeleteForm = /* GraphQL */ `
     onDeleteForm {
       id
       name
-      categoryID
-      category {
-        id
-        name
-        parentID
-        createdAt
-        updatedAt
-      }
+      conditions
+      fees
+      lists
+      metadata
+      outputs
+      sections
+      skipSummary
+      startPage
+      version
       pages
       totalSubs
       createdAt

@@ -9,14 +9,15 @@ export const createForm = /* GraphQL */ `
     createForm(input: $input, condition: $condition) {
       id
       name
-      categoryID
-      category {
-        id
-        name
-        parentID
-        createdAt
-        updatedAt
-      }
+      conditions
+      fees
+      lists
+      metadata
+      outputs
+      sections
+      skipSummary
+      startPage
+      version
       pages
       totalSubs
       createdAt
@@ -32,14 +33,15 @@ export const updateForm = /* GraphQL */ `
     updateForm(input: $input, condition: $condition) {
       id
       name
-      categoryID
-      category {
-        id
-        name
-        parentID
-        createdAt
-        updatedAt
-      }
+      conditions
+      fees
+      lists
+      metadata
+      outputs
+      sections
+      skipSummary
+      startPage
+      version
       pages
       totalSubs
       createdAt
@@ -55,14 +57,15 @@ export const deleteForm = /* GraphQL */ `
     deleteForm(input: $input, condition: $condition) {
       id
       name
-      categoryID
-      category {
-        id
-        name
-        parentID
-        createdAt
-        updatedAt
-      }
+      conditions
+      fees
+      lists
+      metadata
+      outputs
+      sections
+      skipSummary
+      startPage
+      version
       pages
       totalSubs
       createdAt
