@@ -40,6 +40,8 @@ const Form = (props) => {
         if(!props.user && !anonymous){
             if(sessionStorage.getItem('anonymous')){
                 setAnonymous(true);
+            }else if(isLoading){
+                setIsLoading(false);
             }
         }
 
@@ -141,7 +143,7 @@ const Form = (props) => {
                     </div>
                 </div>
             ) : (
-                <FormDisplay id={id} user={props.user} onIsLoading={handleIsLoading} formScheme={formScheme} />
+                <FormDisplay id={id} user={props.user} onIsLoading={handleIsLoading} formScheme={formScheme} isLoading={isLoading} />
             )}
             </FrontendLayout>
         </React.Fragment>
