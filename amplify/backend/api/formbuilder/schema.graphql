@@ -1,8 +1,15 @@
-type Form @model @key(name:"byCategory", fields:["categoryID"]) {
+type Form @model {
   id: ID!
   name: String!
-  categoryID: ID!
-  category: Category @connection(fields: ["categoryID"])
+  conditions: [String]
+  fees: [String]
+  lists: [String]
+  metadata: String
+  outputs: String
+  sections: [String]
+  skipSummary: Boolean
+  startPage: String!
+  version: Int!
   pages: String!
   totalSubs: Int!
 }
