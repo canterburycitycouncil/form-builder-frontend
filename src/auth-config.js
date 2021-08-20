@@ -34,8 +34,8 @@ const authExport = {
         oauth: {
             domain: 'canterbury-cc.auth.eu-west-2.amazoncognito.com',
             scope: ['phone', 'email', 'profile', 'openid', 'aws.cognito.signin.user.admin'],
-            redirectSignIn: 'http://localhost:3000',
-            redirectSignOut: 'http://localhost:3000',
+            redirectSignIn: process.env.AUTH_REDIRECT_URI,
+            redirectSignOut: process.env.AUTH_REDIRECT_URI,
             responseType: 'code' // or 'token', note that REFRESH token will only be generated when the responseType is code
         }
     }
