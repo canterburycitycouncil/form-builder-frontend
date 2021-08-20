@@ -35,6 +35,12 @@ const routes = [
     },
     {
         inMenu: false,
+        path: '/forms/:id/:page',
+        component: Form,
+        adminRoute: false
+    },
+    {
+        inMenu: false,
         path: '/forms/:id',
         component: Form,
         adminRoute: false
