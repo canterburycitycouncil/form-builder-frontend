@@ -109,7 +109,7 @@ const Form = (props) => {
     const signIn = (e) => {
         e.preventDefault();
         Auth.federatedSignIn({
-            customState: location.pathname
+            customState: location.pathname+location.search
         });
     }
 
