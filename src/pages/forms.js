@@ -3,15 +3,15 @@ import Layout from '../components/layout';
 import { useLocation, Link , useHistory, useParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import React from "react";
-import Amplify, { API, graphqlOperation} from "aws-amplify";
-import awsExports from "../aws-exports";
+import { API, graphqlOperation, Auth} from "aws-amplify";
 import { listForms } from '../graphql/queries';
 import { onCreateForm, onUpdateForm, onDeleteForm } from '../graphql/subscriptions';
 import FormDisplay from '../components/form-display';
 import FormSubmissions from '../components/form-submissions';
 import Overlay from "../components/overlay";
+// import internalAuthConfig from "../internal-auth-config";
 
-Amplify.configure(awsExports);
+// Auth.configure(internalAuthConfig);
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -38,6 +38,8 @@ const Forms = (props) => {
     const [subscriptions, setSubscriptions] = useState(null);
     const [currentTab, setCurrentTab] = useState('preview');
     const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState(null);
+    const [userData, setUserData] = useState(null);
     let location = useLocation();
     const { id } = useParams();
     let isNewForm = false;
@@ -106,6 +108,25 @@ const Forms = (props) => {
                 getDBSubscriptions();
             });
         }
+
+        // if(!user){
+        //     Auth.currentAuthenticatedUser().then(async (authenticatedUser) => {
+        //         setUser(authenticatedUser)
+        //         Auth.currentUserInfo().then(data => {
+        //           setUserData(data);
+        //           setIsLoading(false);
+        //         }).catch(err => {
+        //           console.log('could not retrieve user');
+        //           setIsLoading(false);
+        //           Auth.federatedSignIn();
+        //         });
+        //     }).catch(err => {
+        //         console.log(err);
+        //         console.log('no currently authenticated user');
+        //         setIsLoading(false);
+        //         Auth.federatedSignIn();
+        //     });   
+        // }
 
         return function cleanup(){
             if(subscriptions){

@@ -4,11 +4,18 @@ import Form from './pages/form';
 import HomeIcon from '@material-ui/icons/Home';
 import ListIcon from '@material-ui/icons/List';
 import Submission from './pages/submission';
+import Login from './pages/login';
 
 
 const routes = [
     {
-        inMeu: false,
+        inMenu: false,
+        path: "/login",
+        component: Login,
+        adminRoute: false
+    },
+    {
+        inMenu: false,
         path: '/admin/forms/add',
         component: Forms,
         adminRoute: true

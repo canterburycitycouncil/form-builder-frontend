@@ -6,13 +6,17 @@ import Overlay from "../components/overlay";
 import { getForm } from "../graphql/queries";
 import FrontendLayout from '../components/frontend-layout'
 import FormDisplay from '../components/form-display';
+// import externalAuthConfig from '../external-auth-config';
+
+// Auth.configure(externalAuthConfig);
 
 
 const Form = (props) => {
     const [formScheme, setFormScheme] = useState(null);
-    const [formValues, setFormValues] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [anonymous, setAnonymous] = useState(false);
+    const [user, setUser] = useState(null);
+    const [userData, setUserData] = useState(null);
 
     const location = useLocation();
     const history = useHistory();
@@ -20,6 +24,26 @@ const Form = (props) => {
     let { id, page } = useParams();
     
     useEffect(async () => {
+        if(!user && !anonymous){
+            if(sessionStorage.getItem('anonymous')){
+                setAnonymous(true);
+            }else{
+                Auth.currentAuthenticatedUser().then(async (authenticatedUser) => {
+                    setUser(authenticatedUser)
+                    Auth.currentUserInfo().then(data => {
+                      setUserData(data);
+                      setIsLoading(false);
+                    }).catch(err => {
+                      console.log('could not retrieve user');
+                      setIsLoading(false);
+                    });
+                }).catch(err => {
+                    console.log(err);
+                    console.log('no currently authenticated user');
+                    setIsLoading(false);
+                });   
+            }
+        }
         if(!formScheme && id){
             if(sessionStorage.getItem('formScheme') && (sessionStorage.getItem('id') === id)){
                 let formData = sessionStorage.getItem('formScheme');
@@ -37,70 +61,11 @@ const Form = (props) => {
             }
         }
 
-        if(!props.user && !anonymous){
-            if(sessionStorage.getItem('anonymous')){
-                setAnonymous(true);
-            }else if(isLoading){
-                setIsLoading(false);
-            }
-        }
-
         if(formScheme && !page){
             page = formScheme.pages[0].path;
             history.push(location.pathname+page+location.search);
         }
     }, [formScheme])
-
-    // const handleChange = (event) => {
-    //     let label = event.target.name;
-    //     let value = event.target.value;
-
-    //     let fieldValuesCopy = {...formValues};
-    //     fieldValuesCopy[label] = value;
-
-    //     setFormValues(fieldValuesCopy);
-    // }
-
-    // const handleBack = (event) => {
-    //     event.preventDefault();
-    //     setCurrentPage(currentPage - 1);
-    // }
-
-    // const handleNext = (event) => {
-    //     event.preventDefault();
-    //     let result = true;
-    //     let fields = formScheme.pages[currentPage].fields;
-    //     fields.forEach(field => {
-    //         if(field.required && !formValues[field.id]){
-    //             handleError(`Field ${field.label} is required.`, field.id);
-    //             result = false;
-    //         }else if(field.validations && field.validations.length > 0){
-    //             field.validations.forEach(validation => {
-    //                 if(!validation.runValidation(field.value)){
-    //                     handleError(validation.getErrorText(field.label), field.id);
-    //                     result = false;
-    //                 }
-    //             });
-    //         }
-    //     });
-    //     if(result){
-    //         setCurrentPage(currentPage+1);
-    //         setErrorText([]);
-    //         setFieldErrors([]);
-    //     }
-    // }
-
-    // const handleError = (text, field) => {
-    //     let errorTextCopy = errorText.slice(0, errorText.length);
-    //     let fieldErrorsCopy = fieldErrors.slice(0, fieldErrors.length);
-    //     if(errorText.length === 0){
-    //         errorTextCopy.push('There are one or more errors in your responses. Please fix these before continuing.');
-    //     }
-    //     errorTextCopy.push(text);
-    //     fieldErrorsCopy.push(field);
-    //     setErrorText(errorTextCopy);
-    //     setFieldErrors(fieldErrorsCopy);
-    // }
 
     const handleIsLoading = (loading) => {
         setIsLoading(loading);
@@ -125,7 +90,7 @@ const Form = (props) => {
                 <Overlay />
             ) : ''}
             <FrontendLayout title={formScheme ? formScheme.name : ''}>
-            {!props.user && !anonymous ? (
+            {!user && !anonymous ? (
                 <div className="signInContainer">
                     <div className="halfWidth">
                         <div className="contentBox">
@@ -142,9 +107,9 @@ const Form = (props) => {
                         </div>
                     </div>
                 </div>
-            ) : (
-                <FormDisplay id={id} user={props.user} onIsLoading={handleIsLoading} formScheme={formScheme} isLoading={isLoading} />
-            )}
+            ) : ((user && userData) || anonymous ? (
+                <FormDisplay id={id} user={user} userData={userData} onIsLoading={handleIsLoading} formScheme={formScheme} isLoading={isLoading} />
+            ) : '')}
             </FrontendLayout>
         </React.Fragment>
     )

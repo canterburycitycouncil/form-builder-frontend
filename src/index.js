@@ -8,9 +8,9 @@ import theme from './theme'
 import { BrowserRouter } from 'react-router-dom';
 import Amplify, { Auth } from "aws-amplify";
 import awsExports from "./aws-exports";
-import authExport from './auth-config';
+import externalAuthConfig from './external-auth-config';
 Amplify.configure(awsExports);
-Auth.configure(authExport);
+Auth.configure(externalAuthConfig);
 
 ReactDOM.render(
   <React.StrictMode>
