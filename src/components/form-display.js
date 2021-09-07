@@ -4,7 +4,26 @@ import { useLocation, Link, useParams, useHistory } from 'react-router-dom';
 import { createSubmission, updateForm } from '../graphql/mutations';
 import freshdeskIntegration from '../outputs/freshdesk';
 
-const FormDisplay = ({ id, user, onIsLoading, formScheme }) => {
+const personalDetailsFields = [
+    {
+        name: 'first_name',
+        attribute: 'custom:first_name'
+    },
+    {
+        name: 'surname',
+        attribute: 'custom:surname'
+    },
+    {
+        name: 'email',
+        attribute: 'email'
+    },
+    {
+        name: 'telephone',
+        attribute: 'custom:telephone'
+    }
+];
+
+const FormDisplay = ({ id, user, userData, onIsLoading, formScheme }) => {
     const [formValues, setFormValues] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
     const [fieldErrors, setFieldErrors] = useState([]);
@@ -20,7 +39,6 @@ const FormDisplay = ({ id, user, onIsLoading, formScheme }) => {
     let formBaseUrl = splitPath.join('/');
     const { page } = useParams();
 
-    
     useEffect(async () => {
         if(formScheme && !formValues){
             let formValuesDefault = {};
@@ -34,23 +52,31 @@ const FormDisplay = ({ id, user, onIsLoading, formScheme }) => {
                 }
                 return acc;
             }, []);
+            if(user && userData){
+                console.log('hello');
+                personalDetailsFields.forEach( detail => {
+                    formValuesDefault[detail.name] = userData.attributes[detail.attribute];
+                });
+            }
             fields.forEach(field => {
-                if(field.defaultValue){
-                    formValuesDefault[field.name] = field.defaultValue;
-                }else if(field.options.parameterName && params && params[field.options.parameterName]){
+                if(!formValuesDefault[field.name]){
+                    if(field.defaultValue){
+                        formValuesDefault[field.name] = field.defaultValue;
+                    }else if(field.options.parameterName && params && params[field.options.parameterName]){
                         formValuesDefault[field.name] = params[field.options.parameterName];
-                }else{
-                    switch(field.type){
-                        case 'select':
-                            let selectValues = field.values;
-                            if(selectValues && selectValues.length > 0){
-                                formValuesDefault[field.name] = selectValues[0].key;
-                            }else{
+                    }else{
+                        switch(field.type){
+                            case 'select':
+                                let selectValues = field.values;
+                                if(selectValues && selectValues.length > 0){
+                                    formValuesDefault[field.name] = selectValues[0].key;
+                                }else{
+                                    formValuesDefault[field.name] = '';
+                                }
+                            break;
+                            default:
                                 formValuesDefault[field.name] = '';
-                            }
-                        break;
-                        default:
-                            formValuesDefault[field.name] = '';
+                        }
                     }
                 }
             });

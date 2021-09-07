@@ -15,7 +15,6 @@ const App = () => {
       if(!user){
         Auth.currentAuthenticatedUser().then(async (authenticatedUser) => {
           setUser(authenticatedUser)
-          console.log('hello');
           Auth.currentUserInfo().then(data => {
             console.log(data)
             setUserData(data);
@@ -30,6 +29,7 @@ const App = () => {
     }, [user]);
 
     Hub.listen('auth', ({payload: {event, data}}) => {
+      console.log(event);
       switch(event){
         case 'signIn':
           setUser(data);
