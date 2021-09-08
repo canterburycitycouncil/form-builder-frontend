@@ -20,7 +20,7 @@ const Form = (props) => {
   const location = useLocation();
   const history = useHistory();
 
-  let { id, page } = useParams();
+  let { id, page, internal } = useParams();
 
   useEffect(async () => {
     if (!user && !anonymous) {
@@ -84,9 +84,14 @@ const Form = (props) => {
 
   const signIn = (e) => {
     e.preventDefault();
-    Auth.federatedSignIn({
-      customState: location.pathname + location.search,
-    });
+    internal === "internal-account"
+      ? Auth.federatedSignIn({
+          provider: "Google",
+          customState: location.pathname + location.search,
+        })
+      : Auth.federatedSignIn({
+          customState: location.pathname + location.search,
+        });
   };
 
   const continueAsAnonymous = (e) => {
@@ -112,7 +117,11 @@ const Form = (props) => {
                   className="button button-secondary"
                   onClick={(e) => signIn(e)}
                 >
-                  <span className="button-inner">Sign in</span>
+                  <span className="button-inner">
+                    {internal === "internal-account"
+                      ? "Google sign in"
+                      : "Sign in"}
+                  </span>
                 </button>
               </div>
             </div>
