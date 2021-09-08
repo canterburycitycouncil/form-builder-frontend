@@ -20,7 +20,7 @@ const Form = (props) => {
   const location = useLocation();
   const history = useHistory();
 
-  let { id, page } = useParams();
+  let { id, page, internal } = useParams();
 
   useEffect(async () => {
     if (!user && !anonymous) {
@@ -84,9 +84,11 @@ const Form = (props) => {
 
   const signIn = (e) => {
     e.preventDefault();
-    Auth.federatedSignIn({
-      customState: location.pathname + location.search,
-    });
+    internal === "internal-account"
+      ? console.log("test")
+      : Auth.federatedSignIn({
+          customState: location.pathname + location.search,
+        });
   };
 
   const continueAsAnonymous = (e) => {
