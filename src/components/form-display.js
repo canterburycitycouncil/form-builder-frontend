@@ -39,18 +39,6 @@ const FormDisplay = ({ id, user, userData, onIsLoading, formScheme }) => {
   let formBaseUrl = splitPath.join("/");
   const { page } = useParams();
 
-  //   useEffect(() => {
-  //     setFormValues(JSON.parse(sessionStorage.getItem("formValue")));
-  //     console.log(
-  //       "sessionStorage",
-  //       JSON.parse(sessionStorage.getItem("formValue"))
-  //     );
-  //   }, []);
-
-  //   useEffect(() => {
-  //     console.log("formValues", formValues);
-  //   }, [formValues]);
-
   useEffect(async () => {
     if (formScheme && !formValues) {
       let formValuesDefault = {};
