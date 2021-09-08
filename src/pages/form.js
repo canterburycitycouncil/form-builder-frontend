@@ -85,7 +85,10 @@ const Form = (props) => {
   const signIn = (e) => {
     e.preventDefault();
     internal === "internal-account"
-      ? console.log("test")
+      ? Auth.federatedSignIn({
+          provider: "Google",
+          customState: location.pathname + location.search,
+        })
       : Auth.federatedSignIn({
           customState: location.pathname + location.search,
         });
@@ -114,7 +117,11 @@ const Form = (props) => {
                   className="button button-secondary"
                   onClick={(e) => signIn(e)}
                 >
-                  <span className="button-inner">Sign in</span>
+                  <span className="button-inner">
+                    {internal === "internal-account"
+                      ? "Google sign in"
+                      : "Sign in"}
+                  </span>
                 </button>
               </div>
             </div>
