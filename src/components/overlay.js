@@ -1,5 +1,6 @@
 import "../scss/global.scss";
-import ReactHtmlParser from 'react-html-parser';
+import ReactHtmlParser from "react-html-parser";
+import React from "react";
 
 const throbber = `
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background: transparent; display: block; shape-rendering: auto;" width="200px" height="200px" viewbox="0 0 100 100" preserveAspectRatio="xMidYMid">
@@ -70,11 +71,14 @@ const throbber = `
     </svg>`;
 
 const Overlay = () => {
-    return (
-        <div className="overlayContainer">
-            <div className="spinnerContainer" dangerouslySetInnerHTML={{__html: throbber}} />
-        </div>
-    );
-}
+  return (
+    <div className="overlayContainer">
+      <div
+        className="spinnerContainer"
+        dangerouslySetInnerHTML={{ __html: throbber }}
+      />
+    </div>
+  );
+};
 
 export default Overlay;
