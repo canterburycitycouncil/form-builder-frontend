@@ -1,8 +1,9 @@
 import { API, graphqlOperation } from "aws-amplify";
 import React, { useEffect, useState } from "react";
 import { useLocation, Link, useParams, useHistory } from "react-router-dom";
-import { createSubmission, updateForm } from "../graphql/mutations";
-import freshdeskIntegration from "../outputs/freshdesk";
+import { createSubmission, updateForm } from "../../graphql/mutations";
+import freshdeskIntegration from "../../outputs/freshdesk";
+import { ComponentRender } from "./componentRender";
 
 const personalDetailsFields = [
   {
@@ -39,66 +40,71 @@ const FormDisplay = ({ id, user, userData, onIsLoading, formScheme }) => {
   let formBaseUrl = splitPath.join("/");
   const { page } = useParams();
 
-  useEffect(async () => {
-    if (formScheme && !formValues) {
-      let formValuesDefault = {};
-      let pages = formScheme.pages;
-      let params = getParamsFromSearch(location.search);
-      let fields = pages.reduce((acc, page) => {
-        if (page.components) {
-          page.components.forEach((field) => {
-            acc.push(field);
+  useEffect(() => {
+    const getFieldData = async () => {
+      if (formScheme && !formValues) {
+        let formValuesDefault = {};
+        let pages = formScheme.pages;
+        let params = getParamsFromSearch(location.search);
+        let fields = pages.reduce((acc, page) => {
+          if (page.components) {
+            page.components.forEach((field) => {
+              acc.push(field);
+            });
+          }
+          return acc;
+        }, []);
+        if (user && userData) {
+          console.log("hello");
+          personalDetailsFields.forEach((detail) => {
+            formValuesDefault[detail.name] =
+              userData.attributes[detail.attribute];
           });
         }
-        return acc;
-      }, []);
-      if (user && userData) {
-        console.log("hello");
-        personalDetailsFields.forEach((detail) => {
-          formValuesDefault[detail.name] =
-            userData.attributes[detail.attribute];
-        });
-      }
-      fields.forEach((field) => {
-        if (!formValuesDefault[field.name]) {
-          if (field.defaultValue) {
-            formValuesDefault[field.name] = field.defaultValue;
-          } else if (
-            field.options.parameterName &&
-            params &&
-            params[field.options.parameterName]
-          ) {
-            formValuesDefault[field.name] = params[field.options.parameterName];
-          } else {
-            switch (field.type) {
-              case "select":
-                let selectValues = field.values;
-                if (selectValues && selectValues.length > 0) {
-                  formValuesDefault[field.name] = selectValues[0].key;
-                } else {
+        fields.forEach((field) => {
+          if (!formValuesDefault[field.name]) {
+            if (field.defaultValue) {
+              formValuesDefault[field.name] = field.defaultValue;
+            } else if (
+              field.options.parameterName &&
+              params &&
+              params[field.options.parameterName]
+            ) {
+              formValuesDefault[field.name] =
+                params[field.options.parameterName];
+            } else {
+              switch (field.type) {
+                case "select":
+                  let selectValues = field.values;
+                  if (selectValues && selectValues.length > 0) {
+                    formValuesDefault[field.name] = selectValues[0].key;
+                  } else {
+                    formValuesDefault[field.name] = "";
+                  }
+                  break;
+                default:
                   formValuesDefault[field.name] = "";
-                }
-                break;
-              default:
-                formValuesDefault[field.name] = "";
+              }
             }
           }
-        }
-      });
-      setFormValues(
-        JSON.parse(sessionStorage.getItem("formValue"))
-          ? JSON.parse(sessionStorage.getItem("formValue"))
-          : formValuesDefault
-      );
-      onIsLoading(false);
-    }
-    if (!startDate && sessionStorage.getItem("startDate")) {
-      setStartDate(sessionStorage.getItem("startDate"));
-    } else if (!startDate && !sessionStorage.getItem("startDate")) {
-      let newStartDate = getFormattedDate(new Date());
-      sessionStorage.setItem("startDate", newStartDate);
-      setStartDate(newStartDate);
-    }
+        });
+        setFormValues(
+          JSON.parse(sessionStorage.getItem("formValue"))
+            ? JSON.parse(sessionStorage.getItem("formValue"))
+            : formValuesDefault
+        );
+        onIsLoading(false);
+      }
+      if (!startDate && sessionStorage.getItem("startDate")) {
+        setStartDate(sessionStorage.getItem("startDate"));
+      } else if (!startDate && !sessionStorage.getItem("startDate")) {
+        let newStartDate = getFormattedDate(new Date());
+        sessionStorage.setItem("startDate", newStartDate);
+        setStartDate(newStartDate);
+      }
+    };
+
+    getFieldData();
   }, [formScheme]);
 
   const getParamsFromSearch = (searchString) => {
@@ -291,96 +297,15 @@ const FormDisplay = ({ id, user, userData, onIsLoading, formScheme }) => {
           <form onSubmit={(e) => handleSubmit(e)}>
             {(currentPage || currentPage === 0) && page !== "summary" ? (
               <React.Fragment>
-                {formScheme.pages[currentPage].components.map((field) => {
-                  // console.log(field);
-                  let fieldRender;
-                  if (!field.options.hideField) {
-                    switch (field.type) {
-                      case "TextField":
-                        fieldRender = (
-                          <input
-                            className="frontendTextfield"
-                            name={field.name}
-                            value={formValues[field.name]}
-                            onChange={(e) => handleChange(e)}
-                          />
-                        );
-                        break;
-                      case "EmailAddressField":
-                        fieldRender = (
-                          <input
-                            className="frontendTextfield"
-                            name={field.name}
-                            value={formValues[field.name]}
-                            onChange={(e) => handleChange(e)}
-                          />
-                        );
-                        break;
-                      case "TelephoneNumberField":
-                        fieldRender = (
-                          <input
-                            className="frontendTextfield"
-                            name={field.name}
-                            value={formValues[field.name]}
-                            onChange={(e) => handleChange(e)}
-                          />
-                        );
-                        break;
-                      case "MultilineTextField":
-                        fieldRender = (
-                          <textarea
-                            className="frontendTextarea"
-                            name={field.name}
-                            value={formValues[field.name]}
-                            onChange={(e) => handleChange(e)}
-                          />
-                        );
-                        break;
-                      case "select":
-                        fieldRender = (
-                          <select
-                            className="frontendSelect"
-                            name={field.name}
-                            value={formValues[field.name]}
-                            onChange={(e) => handleChange(e)}
-                          >
-                            <option value="">
-                              --Please choose and option--
-                            </option>
-                            {field.values.map((value) => (
-                              <option value={value.key}>{value.value}</option>
-                            ))}
-                          </select>
-                        );
-                        break;
-                    }
-                    return (
-                      <div
-                        key={field.name}
-                        className={`formControl${
-                          fieldErrors.includes(field.name) ? " fieldError" : ""
-                        }`}
-                      >
-                        <label
-                          htmlFor={field.name}
-                          className={`frontendLabel${
-                            field.options.hideTitle ? " visuallyHidden" : ""
-                          }`}
-                        >
-                          {field.title}
-                          {field.options.required === true ||
-                          field.options.required === undefined ? (
-                            <span className="fieldRequired"> * </span>
-                          ) : (
-                            ""
-                          )}
-                        </label>
-                        {fieldRender}
-                      </div>
-                    );
-                  } else {
-                    return "";
-                  }
+                {formScheme.pages[currentPage].components.map((field, idx) => {
+                  return (
+                    <ComponentRender
+                      key={idx}
+                      fieldType={field}
+                      formValues={formValues}
+                      onChange={(e) => handleChange(e)}
+                    />
+                  );
                 })}
                 <div className="formActionsContainer">
                   {currentPage > 0 ? (

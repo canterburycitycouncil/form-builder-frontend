@@ -6,7 +6,7 @@ import React from "react";
 import { API, graphqlOperation, Auth} from "aws-amplify";
 import { listForms } from '../graphql/queries';
 import { onCreateForm, onUpdateForm, onDeleteForm } from '../graphql/subscriptions';
-import FormDisplay from '../components/form-display';
+import FormDisplay from '../components/formDisplay';
 import FormSubmissions from '../components/form-submissions';
 import Overlay from "../components/overlay";
 // import internalAuthConfig from "../internal-auth-config";

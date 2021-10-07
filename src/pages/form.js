@@ -5,7 +5,7 @@ import { useLocation, useParams, useHistory } from "react-router-dom";
 import Overlay from "../components/overlay";
 import { getForm } from "../graphql/queries";
 import FrontendLayout from "../components/frontend-layout";
-import FormDisplay from "../components/form-display";
+import FormDisplay from "../components/formDisplay";
 // import externalAuthConfig from '../external-auth-config';
 
 // Auth.configure(externalAuthConfig);
