@@ -1,19 +1,7 @@
 import React from "react";
-export type fieldType = {
-  name: string;
-};
-
-export interface FieldProps {
-  field: fieldType;
-  onChange: (e: any) => void;
-  formValues: any;
-}
-
-interface ComponentRenderProps {
-  fieldType: fieldType;
-  formValues: any;
-  onChange: (e: any) => void;
-}
+import { ComponentRenderProps } from "./types";
+//@ts-ignore
+import { Input } from "govuk-react-jsx";
 
 export const ComponentRender = ({
   fieldType,
@@ -22,7 +10,7 @@ export const ComponentRender = ({
 }: ComponentRenderProps) => {
   return (
     <>
-      {fieldType.name === "TextField" && (
+      {/* {fieldType.name === "TextField" && (
         <input
           className="frontendTextfield"
           name={fieldType.name}
@@ -63,6 +51,51 @@ export const ComponentRender = ({
           name={fieldType.name}
           value={formValues[fieldType.name]}
           onChange={(e) => onChange(e)}
+        />
+      )} */}
+
+      {fieldType.name === "TextField" && (
+        <Input
+          id={fieldType.name}
+          onChange={(e: any) => onChange(e.target.value)}
+          value={formValues[fieldType.name]}
+          type="text"
+        />
+      )}
+
+      {fieldType.name === "TelephoneNumberField" && (
+        <Input
+          id={fieldType.name}
+          onChange={(e: any) => onChange(e.target.value)}
+          value={formValues[fieldType.name]}
+          type="number"
+        />
+      )}
+
+      {fieldType.name === "EmailAddressField" && (
+        <Input
+          id={fieldType.name}
+          onChange={(e: any) => onChange(e.target.value)}
+          value={formValues[fieldType.name]}
+          type="text"
+        />
+      )}
+
+      {fieldType.name === "MultilineTextField" && (
+        <Input
+          id={fieldType.name}
+          onChange={(e: any) => onChange(e.target.value)}
+          value={formValues[fieldType.name]}
+          type="text"
+        />
+      )}
+
+      {fieldType.name === "select" && (
+        <Input
+          id={fieldType.name}
+          onChange={(e: any) => onChange(e.target.value)}
+          value={formValues[fieldType.name]}
+          type="text"
         />
       )}
     </>
