@@ -8,92 +8,50 @@ export const ComponentRender = ({
   formValues,
   onChange,
 }: ComponentRenderProps) => {
+  console.log("field type:", fieldType);
+  console.log("formValues:", formValues);
   return (
     <>
-      {/* {fieldType.name === "TextField" && (
-        <input
-          className="frontendTextfield"
-          name={fieldType.name}
-          value={formValues[fieldType.name]}
-          onChange={(e) => onChange(e)}
-        />
-      )}
-
-      {fieldType.name === "TelephoneNumberField" && (
-        <input
-          className="frontendTextfield"
-          name={fieldType.name}
-          value={formValues[fieldType.name]}
-          onChange={(e) => onChange(e)}
-        />
-      )}
-
-      {fieldType.name === "EmailAddressField" && (
-        <input
-          className="frontendTextfield"
-          name={fieldType.name}
-          value={formValues[fieldType.name]}
-          onChange={(e) => onChange(e)}
-        />
-      )}
-
-      {fieldType.name === "MultilineTextField" && (
-        <textarea
-          className="frontendTextarea"
-          name={fieldType.name}
-          value={formValues[fieldType.name]}
-          onChange={(e) => onChange(e)}
-        />
-      )}
-      {fieldType.name === "select" && (
-        <textarea
-          className="frontendTextarea"
-          name={fieldType.name}
-          value={formValues[fieldType.name]}
-          onChange={(e) => onChange(e)}
-        />
-      )} */}
-
-      {fieldType.name === "TextField" && (
+      {fieldType.type === "TextField" && (
         <Input
           id={fieldType.name}
-          onChange={(e: any) => onChange(e.target.value)}
+          onChange={(e: any) => onChange(e)}
           value={formValues[fieldType.name]}
-          type="text"
+          type={fieldType.type}
         />
       )}
 
-      {fieldType.name === "TelephoneNumberField" && (
+      {fieldType.type === "TelephoneNumberField" && (
         <Input
           id={fieldType.name}
-          onChange={(e: any) => onChange(e.target.value)}
+          onChange={(e: any) => onChange(e)}
           value={formValues[fieldType.name]}
           type="number"
         />
       )}
 
-      {fieldType.name === "EmailAddressField" && (
+      {fieldType.type === "EmailAddressField" && (
         <Input
           id={fieldType.name}
-          onChange={(e: any) => onChange(e.target.value)}
+          onChange={(e: any) => onChange(e)}
           value={formValues[fieldType.name]}
           type="text"
         />
       )}
 
-      {fieldType.name === "MultilineTextField" && (
+      {fieldType.type === "MultilineTextField" && (
         <Input
           id={fieldType.name}
-          onChange={(e: any) => onChange(e.target.value)}
+          onChange={(e: any) => onChange(e)}
           value={formValues[fieldType.name]}
           type="text"
         />
       )}
 
-      {fieldType.name === "select" && (
+      {fieldType.type === "SelectField" && (
         <Input
           id={fieldType.name}
-          onChange={(e: any) => onChange(e.target.value)}
+          onChange={(e: any) => onChange(e)}
           value={formValues[fieldType.name]}
           type="text"
         />
