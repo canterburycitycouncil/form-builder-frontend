@@ -298,6 +298,7 @@ const FormDisplay = ({ id, user, userData, onIsLoading, formScheme }) => {
             {(currentPage || currentPage === 0) && page !== "summary" ? (
               <React.Fragment>
                 {formScheme.pages[currentPage].components.map((field, idx) => {
+                  console.log(field);
                   return (
                     !field.options.hideField && (
                       <ComponentRender

@@ -8,11 +8,19 @@ export const ComponentRender = ({
   formValues,
   onChange,
 }: ComponentRenderProps) => {
-  console.log("field type:", fieldType);
-  console.log("formValues:", formValues);
+  const inputTypes =
+    fieldType.type === "TextField" ||
+    "EmailAddressField" ||
+    "NumberField" ||
+    "TelephoneNumberField" ||
+    "DateField" ||
+    "DateTimeField" ||
+    "DateTimePartsField" ||
+    "UkAddressField";
+
   return (
     <>
-      {fieldType.type === "TextField" && (
+      {inputTypes ? (
         <Input
           id={fieldType.name}
           onChange={(e: any) => onChange(e)}
@@ -22,31 +30,7 @@ export const ComponentRender = ({
           value={formValues[fieldType.name]}
           type={fieldType.type}
         />
-      )}
-
-      {fieldType.type === "TelephoneNumberField" && (
-        <Input
-          id={fieldType.name}
-          label={{
-            children: fieldType.title,
-          }}
-          onChange={(e: any) => onChange(e)}
-          value={formValues[fieldType.name]}
-          type="number"
-        />
-      )}
-
-      {fieldType.type === "EmailAddressField" && (
-        <Input
-          id={fieldType.name}
-          label={{
-            children: fieldType.title,
-          }}
-          onChange={(e: any) => onChange(e)}
-          value={formValues[fieldType.name]}
-          type="text"
-        />
-      )}
+      ) : null}
 
       {fieldType.type === "MultilineTextField" && (
         <Input
