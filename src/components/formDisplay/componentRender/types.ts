@@ -24,6 +24,7 @@ export type fieldType = {
     | "FlashCard"
     | "List";
   name: string;
+  title: string;
 };
 
 export interface FieldProps {

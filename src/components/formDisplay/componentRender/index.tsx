@@ -16,6 +16,9 @@ export const ComponentRender = ({
         <Input
           id={fieldType.name}
           onChange={(e: any) => onChange(e)}
+          label={{
+            children: fieldType.title,
+          }}
           value={formValues[fieldType.name]}
           type={fieldType.type}
         />
@@ -24,6 +27,9 @@ export const ComponentRender = ({
       {fieldType.type === "TelephoneNumberField" && (
         <Input
           id={fieldType.name}
+          label={{
+            children: fieldType.title,
+          }}
           onChange={(e: any) => onChange(e)}
           value={formValues[fieldType.name]}
           type="number"
@@ -33,6 +39,9 @@ export const ComponentRender = ({
       {fieldType.type === "EmailAddressField" && (
         <Input
           id={fieldType.name}
+          label={{
+            children: fieldType.title,
+          }}
           onChange={(e: any) => onChange(e)}
           value={formValues[fieldType.name]}
           type="text"
@@ -42,6 +51,9 @@ export const ComponentRender = ({
       {fieldType.type === "MultilineTextField" && (
         <Input
           id={fieldType.name}
+          label={{
+            children: fieldType.title,
+          }}
           onChange={(e: any) => onChange(e)}
           value={formValues[fieldType.name]}
           type="text"
@@ -51,6 +63,9 @@ export const ComponentRender = ({
       {fieldType.type === "SelectField" && (
         <Input
           id={fieldType.name}
+          label={{
+            children: fieldType.title,
+          }}
           onChange={(e: any) => onChange(e)}
           value={formValues[fieldType.name]}
           type="text"

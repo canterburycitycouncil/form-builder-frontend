@@ -299,12 +299,14 @@ const FormDisplay = ({ id, user, userData, onIsLoading, formScheme }) => {
               <React.Fragment>
                 {formScheme.pages[currentPage].components.map((field, idx) => {
                   return (
-                    <ComponentRender
-                      key={idx}
-                      fieldType={field}
-                      formValues={formValues}
-                      onChange={(e) => handleChange(e)}
-                    />
+                    !field.options.hideField && (
+                      <ComponentRender
+                        key={idx}
+                        fieldType={field}
+                        formValues={formValues}
+                        onChange={(e) => handleChange(e)}
+                      />
+                    )
                   );
                 })}
                 <div className="formActionsContainer">
