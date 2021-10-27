@@ -1,26 +1,17 @@
 import React from "react";
 import { ComponentRenderProps } from "./types";
 //@ts-ignore
-import { Input } from "govuk-react-jsx";
+import { Input, Radios } from "govuk-react-jsx";
+import { inputTypes } from "./utils";
 
 export const ComponentRender = ({
   fieldType,
   formValues,
   onChange,
 }: ComponentRenderProps) => {
-  const inputTypes =
-    fieldType.type === "TextField" ||
-    "EmailAddressField" ||
-    "NumberField" ||
-    "TelephoneNumberField" ||
-    "DateField" ||
-    "DateTimeField" ||
-    "DateTimePartsField" ||
-    "UkAddressField";
-
   return (
     <>
-      {inputTypes ? (
+      {inputTypes.includes(fieldType.type) && (
         <Input
           id={fieldType.name}
           onChange={(e: any) => onChange(e)}
@@ -30,7 +21,7 @@ export const ComponentRender = ({
           value={formValues[fieldType.name]}
           type={fieldType.type}
         />
-      ) : null}
+      )}
 
       {fieldType.type === "MultilineTextField" && (
         <Input
@@ -53,6 +44,33 @@ export const ComponentRender = ({
           onChange={(e: any) => onChange(e)}
           value={formValues[fieldType.name]}
           type="text"
+        />
+      )}
+
+      {fieldType.type === "RadiosField" && (
+        <Radios
+          fieldset={{
+            legend: {
+              children: fieldType.title,
+            },
+          }}
+          hint={{
+            children:
+              "This includes changing your last name or spelling your name differently.",
+          }}
+          items={[
+            {
+              children: "Yes",
+              value: "yes",
+            },
+            {
+              children: "No",
+              value: "no",
+            },
+          ]}
+          name={fieldType.name}
+          onChange={(e: any) => onChange(e)}
+          value={formValues[fieldType.name]}
         />
       )}
     </>
